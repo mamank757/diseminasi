@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page_title">Laporan PPL - DIGITAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
+        
+        * { box-sizing: border-box; }
+        body { font-family: 'Times New Roman', Times, serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 0; }
+        
+        /* Floating Buttons */
+        .floating-container { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
+        .floating-btn { width: 55px; height: 55px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 6px 15px rgba(0,0,0,0.4); transition: transform 0.3s ease; }
+        .floating-home { background-color: #11807e; font-size: 24px; }
+        .floating-tiktok { background-color: #000000; font-size: 24px; }
+        .floating-btn:hover { transform: scale(1.15) translateY(-5px); }
+
+        /* Report Styling */
+        #report table { border-spacing: 0; border-collapse: collapse; width: 100%; }
+        #report td { padding-top: 2px; padding-bottom: 2px; line-height: 1.5; vertical-align: top; }
+        .report-container { width: 100%; padding: 10px; display: flex; justify-content: center; }
+        .report-page {
+            background: white; width: 210mm; min-height: 297mm;
+            padding: 20mm; margin: 10px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            font-size: 11pt; line-height: 1.4; color: black; position: relative;
+        }
+
+        @media screen and (max-width: 210mm) {
+            .report-container { padding: 0; display: block; overflow-x: hidden; }
+            .report-page {
+                transform: scale(calc(100vw / 210mm)); transform-origin: top left;
+                margin: 0; margin-bottom: calc(20px - (297mm * (1 - (100vw / 210mm))));
+                box-shadow: none;
+            }
+        }
+
+        @media print {
+            @page { size: A4; margin: 0; }
+            body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
+            .no-print, .floating-container { display: none !important; }
+            .report-container { padding: 0 !important; margin: 0 !important; display: block !important; width: 100% !important; }
+            .report-page { 
+                transform: none !important; 
+                margin: 0 !important; 
+                box-shadow: none !important; 
+                padding: 20mm !important; 
+                width: 210mm !important; 
+                min-height: 297mm !important;
+                display: block !important;
+                position: static !important;
+            }
+            #report, #report * { color: black !important; }
+            tr, .foto-wrap, .sig-section { page-break-inside: avoid; }
+        }
+
+        /* Input UI */
+        .input-group label { display: block; font-size: 0.75rem; font-weight: bold; color: #bbb; margin-bottom: 2px; }
+        .input-group input, .input-group textarea, .input-group select { 
+            width: 100%; background-color: #1e1e1e; border: 1px solid #333; color: #fff;
+            padding: 10px; border-radius: 6px; font-size: 0.9rem; 
+        }
+        #img_preview { display: block; margin: 10px auto; max-width: 9cm; max-height: 6cm; border: 1px solid #ddd; object-fit: contain; }
+        .hidden-element { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="floating-container">
+        <a href="https://mamank757.github.io/PPL" class="floating-btn floating-home" title="Home"><i class="fa-solid fa-house"></i></a>
+        <a href="https://www.tiktok.com/@generasi90blog" target="_blank" class="floating-btn floating-tiktok"><i class="fa-brands fa-tiktok"></i></a>
+    </div>
+
+    <div class="no-print max-w-6xl mx-auto p-4 md:p-6 bg-[#1e1e1e] my-4 rounded-xl shadow-2xl border-t-4 border-blue-600">
+        <h2 class="text-xl font-bold mb-6 text-blue-400 flex items-center">💻 Sistem Laporan Diseminasi Penyuluh Milenial</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+            <div class="space-y-3 bg-[#252525] p-4 rounded-lg border border-gray-800">
+                <h3 class="font-bold text-blue-400 uppercase border-b border-gray-700 pb-1">I. Identitas</h3>
+                <div class="input-group">
+                    <label>NAMA PENYULUH</label>
+                    <select id="in_nama" onchange="updateDataPenyuluh()">
+                        <option value="">-- Pilih Nama --</option>
+                        <option>ABDUL RAHMAN, SP</option> 
+                        <option>ANDI LUTHFIAH, SP</option>
+                        <option>INDRA YULIANA, S.TP., M.Si.</option>
+                        <option>NURUL FAHMI, S.P.</option>
+                        <option>REZKI RAHAYU, S.P.</option>
+                        <option>RIZAL SMITH ANUGRAH SYAM, S.P.</option>
+                        <option>SUHADY HAMDAN, S.P.</option>
+                        <option>SULFIANITA, S.P.</option>
+                        <option>SURAHMAN, S.TP</option>
+                    </select>
+                </div>
+                <div class="input-group"><label>NIP</label><input type="text" id="in_nip" readonly class="opacity-70"></div>
+                <div class="input-group">
+                    <label>Jabatan</label>
+                    <select id="in_jabatan" onchange="updateLaporan()">
+                        <option value="Penyuluh Pertanian Ahli Pertama">Penyuluh Pertanian Ahli Pertama</option>
+                        <option value="Penyuluh Pertanian Ahli Muda">Penyuluh Pertanian Ahli Muda</option>
+                    </select>
+                </div>
+                <div class="input-group"><label>Unit Kerja</label><input type="text" id="in_unit" oninput="updateLaporan()" value="Kementerian Pertanian RI"></div>
+            </div>
+
+            <div class="space-y-3 bg-[#252525] p-4 rounded-lg border border-gray-800">
+                <h3 class="font-bold text-blue-400 uppercase border-b border-gray-700 pb-1">II. Detail Kegiatan</h3>
+                <div class="input-group"><label>Materi Diseminasi</label><input type="text" id="in_kegiatan" oninput="updateLaporan()" placeholder="Judul materi..."></div>
+                <div class="input-group">
+                    <label>Metode</label>
+                    <select id="in_metode" onchange="updateLaporan()">
+                        <option value="">-- Pilih Metode --</option>
+                        <option value="Diskusi">Diskusi</option>
+                        <option value="Ceramah">Ceramah</option>
+                        <option value="Demonstrasi">Demonstrasi</option>
+                        <option value="Kunjungan Anjangsana">Kunjungan Anjangsana</option>
+                        <option value="Media Cetak/Media Sosial">Media Cetak/Media Sosial</option>
+                        <option value="Pameran">Pameran</option>
+                        <option value="Temu Wicara">Temu Wicara</option>
+                    </select>
+                </div>
+                <div class="input-group"><label>Lokasi</label><input type="text" id="in_lokasi" oninput="updateLaporan()" placeholder="Desa/Kelompok Tani"></div>
+                <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="in_peserta" oninput="updateLaporan()" placeholder="12 Orang"></div>
+                <div class="input-group"><label>Foto Kegiatan (Opsional)</label><input type="file" id="in_foto" accept="image/*" onchange="handleFoto(this)" class="text-xs"></div>
+            </div>
+
+            <div class="space-y-3 bg-[#2d251d] p-4 rounded-lg border border-orange-900/30">
+                <h3 class="font-bold text-orange-400 border-b border-orange-900/30 pb-1">III. Pengesahan</h3>
+                <div class="input-group"><label>Nama Koordinator</label><input type="text" id="in_nama_koor" oninput="updateLaporan()" value="Nama Koordinator"></div>
+                <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_koor" oninput="updateLaporan()" value="19xxxxxxxxxxxxxxx"></div>
+                <div class="input-group"><label>Tempat TTD</label><input type="text" id="in_tempat_ttd" oninput="updateLaporan()" value="Bola"></div>
+                <div class="input-group"><label>Tanggal</label><input type="date" id="in_tgl_ttd_manual" onchange="updateLaporan()"></div>
+                <div class="input-group"><label>TTD Penyuluh</label><input type="file" onchange="handleTTD(this, 'out_img_ttd_ppl')" class="text-xs"></div>
+                <div class="input-group"><label>TTD Koordinator</label><input type="file" onchange="handleTTD(this, 'out_img_ttd_koor')" class="text-xs"></div>
+            </div>
+        </div>
+
+        <div class="mt-6 p-4 bg-purple-900/20 border border-purple-500/30 rounded-lg">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-bold text-purple-400 text-sm italic uppercase">Generate Hasil Kegiatan</h3>
+                <button onclick="generateAI()" id="btn-ai" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-2 px-6 rounded-full transition">
+                    <span id="loader" class="hidden">🌀</span> ✨ Buat Deskripsi Otomatis
+                </button>
+            </div>
+            <textarea id="in_hasil" oninput="updateLaporan()" class="w-full h-32 bg-[#1e1e1e] border border-gray-700 p-3 rounded text-white text-sm" placeholder="Deskripsi hasil kegiatan akan muncul di sini, atau tulis manual"></textarea>
+        </div>
+
+        <button onclick="window.print()" class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg transition active:scale-95">🖨️ Cetak LAPORAN (PDF)</button>
+    </div>
+
+    <div class="report-container">
+        <div id="report" class="report-page">
+            <div class="text-center font-bold text-lg mb-8 uppercase">
+                LAPORAN KEGIATAN DISEMINASI INFORMASI PERTANIAN
+            </div>
+
+            <table class="w-full">
+                <tr><td style="width: 30px;" class="font-bold">1.</td><td colspan="2" class="font-bold">Penyuluh Pertanian</td></tr>
+                <tr><td></td><td style="width: 180px;">a. Nama / NIP</td><td>: <span id="out_nama"></span> / NIP. <span id="out_nip"></span></td></tr>
+                <tr><td></td><td>b. Jabatan</td><td>: <span id="out_jabatan"></span></td></tr>
+                <tr><td></td><td>c. Unit Kerja</td><td>: <span id="out_unit"></span></td></tr>
+                
+                <tr><td class="font-bold pt-2">2.</td><td class="font-bold pt-2">Dasar Pelaksanaan</td><td class="pt-2">: Indikator Kinerja Penyuluh Pertanian</td></tr>
+                
+                <tr><td class="font-bold pt-2">3.</td><td class="font-bold pt-2">Materi Diseminasi</td><td class="pt-2">: <span id="out_kegiatan" class="font-bold"></span></td></tr>
+                
+                <tr><td class="font-bold pt-2">4.</td><td colspan="2" class="font-bold pt-2">Pelaksanaan Kegiatan</td></tr>
+                <tr><td></td><td>a. Waktu</td><td>: <span id="out_tgl"></span></td></tr>
+                <tr><td></td><td>b. Tempat/Lokasi</td><td>: <span id="out_lokasi"></span></td></tr>
+                <tr><td></td><td>c. Metode</td><td>: <span id="out_metode"></span></td></tr>
+                <tr><td></td><td>d. Peserta</td><td>: <span id="out_peserta"></span></td></tr>
+                
+                <tr>
+                    <td class="font-bold pt-4">5.</td>
+                    <td class="font-bold pt-4">Hasil Kegiatan</td>
+                    <td class="pt-4">: <div id="out_hasil" class="inline text-justify leading-relaxed whitespace-pre-line text-[11pt]"></div></td>
+                </tr>
+            </table>
+
+            <div id="foto_container" class="foto-wrap mt-6 hidden-element text-center">
+                <img id="img_preview" src="" alt="Foto Kegiatan">
+                <p class="text-[10pt] italic mt-1">Gambar 1. Dokumentasi Kegiatan</p>
+            </div>
+
+            <div class="sig-section flex justify-between px-4 mt-12">
+                <div class="text-center w-1/2">
+                    Mengetahui:<br>Koordinator BPP
+                    <div class="h-24 flex items-center justify-center">
+                        <img id="out_img_ttd_koor" src="" class="max-h-20 hidden">
+                    </div>
+                    <div id="out_nama_koor" class="font-bold underline">H. ANDI BASO, S.P.</div>
+                    NIP. <span id="out_nip_koor">19710525 199803 1 010</span>
+                </div>
+                <div class="text-center w-1/2">
+                    <span id="out_tempat_ttd">Bola</span>, <span id="out_tgl_ttd"></span><br>
+                    Penyuluh Pertanian
+                    <div class="h-24 flex items-center justify-center">
+                        <img id="out_img_ttd_ppl" src="" class="max-h-20 hidden">
+                    </div>
+                    <div id="sig_nama" class="font-bold underline"></div>
+                    NIP. <span id="sig_nip"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dataPenyuluh = {
+            "ABDUL RAHMAN, SP": { nip: "199009202020121001" },
+            "ANDI LUTHFIAH, SP": { nip: "199307162020122003" },
+            "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
+            "NURUL FAHMI, S.P.": { nip: "198911142020122002" },
+            "REZKI RAHAYU, S.P.": { nip: "199507052020122003" },
+            "RIZAL SMITH ANUGRAH SYAM, S.P.": { nip: "199005152020121001" },
+            "SUHADY HAMDAN, S.P.": { nip: "199202072020121001" },
+            "SULFIANITA, S.P.": { nip: "199505082020122004" },
+            "SURAHMAN, S.TP": { nip: "199203122020121003" }
+        };
+
+        function updateDataPenyuluh() {
+            const nama = document.getElementById("in_nama").value;
+            document.getElementById("in_nip").value = dataPenyuluh[nama] ? dataPenyuluh[nama].nip : "";
+            updateLaporan();
+        }
+
+        function handleFoto(input) {
+            const container = document.getElementById('foto_container');
+            const img = document.getElementById('img_preview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => { img.src = e.target.result; container.classList.remove('hidden-element'); };
+                reader.readAsDataURL(input.files[0]);
+            } else { container.classList.add('hidden-element'); }
+        }
+
+        function handleTTD(input, targetId) {
+            const img = document.getElementById(targetId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => { img.src = e.target.result; img.classList.remove('hidden'); };
+                reader.readAsDataURL(input.files[0]);
+            } else { img.classList.add('hidden'); }
+        }
+
+        function updateLaporan() {
+            const ids = ['nama', 'nip', 'jabatan', 'unit', 'kegiatan', 'lokasi', 'metode', 'peserta', 'hasil', 'tempat_ttd', 'nama_koor', 'nip_koor'];
+            
+            ids.forEach(id => {
+                const val = document.getElementById('in_' + id)?.value || "";
+                const out = document.getElementById('out_' + id);
+                if (out) out.innerText = val;
+                if (id === 'nama') document.getElementById('sig_nama').innerText = val;
+                if (id === 'nip') document.getElementById('sig_nip').innerText = val;
+            });
+
+            const tglManual = document.getElementById('in_tgl_ttd_manual').value;
+            let d = tglManual ? new Date(tglManual) : new Date();
+            const formatTgl = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            document.getElementById('out_tgl').innerText = formatTgl;
+            document.getElementById('out_tgl_ttd').innerText = formatTgl;
+        }
+
+        async function generateAI() {
+            const btn = document.getElementById('btn-ai');
+            const loader = document.getElementById('loader');
+            const materi = document.getElementById('in_kegiatan').value;
+            const lokasi = document.getElementById('in_lokasi').value;
+            const metode = document.getElementById('in_metode').value;
+            const key = "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"; 
+
+            if(!materi || !lokasi) return alert("Mohon lengkapi Materi dan Lokasi terlebih dahulu.");
+            
+            btn.disabled = true; loader.classList.remove('hidden');
+
+            try {
+                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+                    body: JSON.stringify({ 
+                        model: "llama-3.3-70b-versatile", 
+                        messages: [{ role: "user", content: `Buat narasi laporan hasil kegiatan diseminasi pertanian tentang "${materi}" yang dilaksanakan di "${lokasi}" dengan metode "${metode}". Narasi harus formal, profesional, dan dalam bentuk paragraf deskripsi tanpa poin-poin.` }]
+                    })
+                });
+                const data = await res.json();
+                const deskripsi = data.choices[0].message.content;
+                document.getElementById('in_hasil').value = deskripsi;
+                updateLaporan();
+            } catch (e) { alert("Gagal memanggil AI. Gunakan input manual."); } 
+            finally { btn.disabled = false; loader.classList.add('hidden'); }
+        }
+
+        window.onload = updateLaporan;
+    </script>
+</body>
+</html>
