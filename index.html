@@ -3,297 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page_title">Laporan PPL - DIGITAL</title>
+    <title>DISEMINASI MILENIAL - King Mamank</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
-        
         * { box-sizing: border-box; }
         body { font-family: 'Times New Roman', Times, serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 0; }
         
-        /* Floating Buttons */
-        .floating-container { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 15px; z-index: 9999; }
-        .floating-btn { width: 55px; height: 55px; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 6px 15px rgba(0,0,0,0.4); transition: transform 0.3s ease; }
-        .floating-home { background-color: #11807e; font-size: 24px; }
-        .floating-tiktok { background-color: #000000; font-size: 24px; }
-        .floating-btn:hover { transform: scale(1.15) translateY(-5px); }
-
-        /* Report Styling */
-        #report table { border-spacing: 0; border-collapse: collapse; width: 100%; }
-        #report td { padding-top: 2px; padding-bottom: 2px; line-height: 1.5; vertical-align: top; }
-        .report-container { width: 100%; padding: 10px; display: flex; justify-content: center; }
+        /* Preview Kertas A4 */
         .report-page {
             background: white; width: 210mm; min-height: 297mm;
-            padding: 20mm; margin: 10px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            font-size: 11pt; line-height: 1.4; color: black; position: relative;
+            padding: 20mm; margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            font-size: 11pt; line-height: 1.5; color: black; page-break-after: always;
+            position: relative;
         }
+        .report-page table { border-spacing: 0; border-collapse: collapse; width: 100%; color: black; }
+        .report-page td { padding-top: 2px; padding-bottom: 2px; vertical-align: top; }
 
-        @media screen and (max-width: 210mm) {
-            .report-container { padding: 0; display: block; overflow-x: hidden; }
-            .report-page {
-                transform: scale(calc(100vw / 210mm)); transform-origin: top left;
-                margin: 0; margin-bottom: calc(20px - (297mm * (1 - (100vw / 210mm))));
-                box-shadow: none;
-            }
-        }
+        .sig-box { position: relative; height: 90px; width: 100%; display: flex; align-items: center; justify-content: center; }
+        .ttd-img { max-height: 90px; max-width: 160px; object-fit: contain; pointer-events: none; }
 
         @media print {
             @page { size: A4; margin: 0; }
-            body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
-            .no-print, .floating-container { display: none !important; }
-            .report-container { padding: 0 !important; margin: 0 !important; display: block !important; width: 100% !important; }
-            .report-page { 
-                transform: none !important; 
-                margin: 0 !important; 
-                box-shadow: none !important; 
-                padding: 20mm !important; 
-                width: 210mm !important; 
-                min-height: 297mm !important;
-                display: block !important;
-                position: static !important;
-            }
-            #report, #report * { color: black !important; }
-            tr, .foto-wrap, .sig-section { page-break-inside: avoid; }
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            .report-page { margin: 0 !important; box-shadow: none !important; border: none; }
         }
 
-        /* Input UI */
-        .input-group label { display: block; font-size: 0.75rem; font-weight: bold; color: #bbb; margin-bottom: 2px; }
-        .input-group input, .input-group textarea, .input-group select { 
+        /* UI Styling */
+        .input-group label { display: block; font-size: 0.7rem; font-weight: bold; color: #3b82f6; margin-bottom: 2px; text-transform: uppercase; }
+        .input-group input, .input-group select { 
             width: 100%; background-color: #1e1e1e; border: 1px solid #333; color: #fff;
-            padding: 10px; border-radius: 6px; font-size: 0.9rem; 
+            padding: 8px; border-radius: 6px; font-size: 0.85rem; transition: all 0.3s;
         }
-        #img_preview { display: block; margin: 10px auto; max-width: 9cm; max-height: 6cm; border: 1px solid #ddd; object-fit: contain; }
-        .hidden-element { display: none; }
+        .input-group input:focus { border-color: #3b82f6; outline: none; background-color: #252525; }
+        .section-box { background: #1e1e1e; padding: 15px; rounded-xl; border: 1px solid #333; height: 100%; }
     </style>
 </head>
 <body>
 
-    <div class="floating-container">
-        <a href="https://mamank757.github.io/PPL" class="floating-btn floating-home" title="Home"><i class="fa-solid fa-house"></i></a>
-        <a href="https://www.tiktok.com/@generasi90blog" target="_blank" class="floating-btn floating-tiktok"><i class="fa-brands fa-tiktok"></i></a>
-    </div>
-
-    <div class="no-print max-w-6xl mx-auto p-4 md:p-6 bg-[#1e1e1e] my-4 rounded-xl shadow-2xl border-t-4 border-blue-600">
-        <h2 class="text-xl font-bold mb-6 text-blue-400 flex items-center">💻 Sistem Laporan Diseminasi Penyuluh Milenial</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-            <div class="space-y-3 bg-[#252525] p-4 rounded-lg border border-gray-800">
-                <h3 class="font-bold text-blue-400 uppercase border-b border-gray-700 pb-1">I. Identitas</h3>
-                <div class="input-group">
-                    <label>NAMA PENYULUH</label>
-                    <select id="in_nama" onchange="updateDataPenyuluh()">
-                        <option value="">-- Pilih Nama --</option>
-                        <option>ABDUL RAHMAN, SP</option> 
-                        <option>ANDI LUTHFIAH, SP</option>
-                        <option>INDRA YULIANA, S.TP., M.Si.</option>
-                        <option>NURUL FAHMI, S.P.</option>
-                        <option>REZKI RAHAYU, S.P.</option>
-                        <option>RIZAL SMITH ANUGRAH SYAM, S.P.</option>
-                        <option>SUHADY HAMDAN, S.P.</option>
-                        <option>SULFIANITA, S.P.</option>
-                        <option>SURAHMAN, S.TP</option>
-                    </select>
-                </div>
-                <div class="input-group"><label>NIP</label><input type="text" id="in_nip" readonly class="opacity-70"></div>
-                <div class="input-group">
-                    <label>Jabatan</label>
-                    <select id="in_jabatan" onchange="updateLaporan()">
-                        <option value="Penyuluh Pertanian Ahli Pertama">Penyuluh Pertanian Ahli Pertama</option>
-                        <option value="Penyuluh Pertanian Ahli Muda">Penyuluh Pertanian Ahli Muda</option>
-                    </select>
-                </div>
-                <div class="input-group"><label>Unit Kerja</label><input type="text" id="in_unit" oninput="updateLaporan()" value="Kementerian Pertanian RI"></div>
-            </div>
-
-            <div class="space-y-3 bg-[#252525] p-4 rounded-lg border border-gray-800">
-                <h3 class="font-bold text-blue-400 uppercase border-b border-gray-700 pb-1">II. Detail Kegiatan</h3>
-                <div class="input-group"><label>Materi Diseminasi</label><input type="text" id="in_kegiatan" oninput="updateLaporan()" placeholder="Judul materi..."></div>
-                <div class="input-group">
-                    <label>Metode</label>
-                    <select id="in_metode" onchange="updateLaporan()">
-                        <option value="">-- Pilih Metode --</option>
-                        <option value="Diskusi">Diskusi</option>
-                        <option value="Ceramah">Ceramah</option>
-                        <option value="Demonstrasi">Demonstrasi</option>
-                        <option value="Kunjungan Anjangsana">Kunjungan Anjangsana</option>
-                        <option value="Media Cetak/Media Sosial">Media Cetak/Media Sosial</option>
-                        <option value="Pameran">Pameran</option>
-                        <option value="Temu Wicara">Temu Wicara</option>
-                    </select>
-                </div>
-                <div class="input-group"><label>Lokasi</label><input type="text" id="in_lokasi" oninput="updateLaporan()" placeholder="Desa/Kelompok Tani"></div>
-                <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="in_peserta" oninput="updateLaporan()" placeholder="Cth. 12 Orang"></div>
-                <div class="input-group"><label>Foto Kegiatan (Opsional)</label><input type="file" id="in_foto" accept="image/*" onchange="handleFoto(this)" class="text-xs"></div>
-            </div>
-
-            <div class="space-y-3 bg-[#2d251d] p-4 rounded-lg border border-orange-900/30">
-                <h3 class="font-bold text-orange-400 border-b border-orange-900/30 pb-1">III. Pengesahan</h3>
-                <div class="input-group"><label>Wilayah Kerja BPP</label><input type="text" id="in_wilayah_kerja" oninput="updateLaporan()" value="Bola"></div>
-                <div class="input-group"><label>Nama Koordinator</label><input type="text" id="in_nama_koor" oninput="updateLaporan()" value="Nama Koordinator"></div>
-                <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_koor" oninput="updateLaporan()" value="19xxxxxxxxxxxxxx"></div>
-                <div class="input-group"><label>Tempat TTD</label><input type="text" id="in_tempat_ttd" oninput="updateLaporan()" value="Bola"></div>
-                <div class="input-group"><label>Tanggal Kegiatan</label><input type="date" id="in_tgl_ttd_manual" onchange="updateLaporan()"></div>
-                <div class="input-group"><label>TTD Penyuluh</label><input type="file" onchange="handleTTD(this, 'out_img_ttd_ppl')" class="text-xs"></div>
-                <div class="input-group"><label>TTD Koordinator</label><input type="file" onchange="handleTTD(this, 'out_img_ttd_koor')" class="text-xs"></div>
-            </div>
-        </div>
-
-        <div class="mt-6 p-4 bg-purple-900/20 border border-purple-500/30 rounded-lg">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="font-bold text-purple-400 text-sm italic uppercase">Generate Hasil Kegiatan</h3>
-                <button onclick="generateAI()" id="btn-ai" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-2 px-6 rounded-full transition">
-                    <span id="loader" class="hidden">🌀</span> ✨ Buat Deskripsi Otomatis
+<div class="no-print p-4 lg:p-8 max-w-[1600px] mx-auto">
+    <div class="bg-[#181818] rounded-2xl p-6 shadow-2xl border-b-4 border-blue-600">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-white"><i class="fa-solid fa-file-invoice-dt mr-3 text-blue-500"></i>FORM 51 PPL MILENIAL</h1>
+            <div class="flex gap-3 mt-4 md:mt-0">
+                <button onclick="generateAI()" id="btn-ai" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-bold transition flex items-center">
+                    <span id="loader" class="hidden mr-2">🌀</span> ✨ GENERATE NARASI AI
+                </button>
+                <button onclick="window.print()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg">
+                    <i class="fa-solid fa-print mr-2"></i> CETAK LAPORAN
                 </button>
             </div>
-            <textarea id="in_hasil" oninput="updateLaporan()" class="w-full h-32 bg-[#1e1e1e] border border-gray-700 p-3 rounded text-white text-sm" placeholder="Deskripsi hasil kegiatan akan muncul di sini, atau tulis manual"></textarea>
         </div>
 
-        <button onclick="window.print()" class="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg transition active:scale-95">🖨️ Cetak LAPORAN (PDF)</button>
-    </div>
-
-    <div class="report-container">
-        <div id="report" class="report-page">
-            <div class="text-center font-bold text-lg mb-8 uppercase">
-                LAPORAN KEGIATAN DISEMINASI INFORMASI PERTANIAN
-            </div>
-
-            <table class="w-full">
-                <tr><td style="width: 30px;" class="font-bold">1.</td><td colspan="2" class="font-bold">Penyuluh Pertanian</td></tr>
-                <tr><td></td><td style="width: 180px;">a. Nama / NIP</td><td>: <span id="out_nama"></span> / NIP. <span id="out_nip"></span></td></tr>
-                <tr><td></td><td>b. Jabatan</td><td>: <span id="out_jabatan"></span></td></tr>
-                <tr><td></td><td>c. Unit Kerja</td><td>: <span id="out_unit"></span></td></tr>
-                
-                <tr><td class="font-bold pt-2">2.</td><td class="font-bold pt-2">Dasar Pelaksanaan</td><td class="pt-2">: Indikator Kinerja Penyuluh Pertanian</td></tr>
-                
-                <tr><td class="font-bold pt-2">3.</td><td class="font-bold pt-2">Materi Diseminasi</td><td class="pt-2">: <span id="out_kegiatan" class="font-bold"></span></td></tr>
-                
-                <tr><td class="font-bold pt-2">4.</td><td colspan="2" class="font-bold pt-2">Pelaksanaan Kegiatan</td></tr>
-                <tr><td></td><td>a. Waktu</td><td>: <span id="out_tgl"></span></td></tr>
-                <tr><td></td><td>b. Tempat/Lokasi</td><td>: <span id="out_lokasi"></span></td></tr>
-                <tr><td></td><td>c. Metode</td><td>: <span id="out_metode"></span></td></tr>
-                <tr><td></td><td>d. Peserta</td><td>: <span id="out_peserta"></span></td></tr>
-                
-                <tr>
-                    <td class="font-bold pt-4">5.</td>
-                    <td class="font-bold pt-4">Hasil Kegiatan</td>
-                    <td class="pt-4">: <div id="out_hasil" class="inline text-justify leading-relaxed whitespace-pre-line text-[11pt]"></div></td>
-                </tr>
-            </table>
-
-            <div id="foto_container" class="foto-wrap mt-6 hidden-element text-center">
-                <img id="img_preview" src="" alt="Foto Kegiatan">
-                <p class="text-[10pt] italic mt-1">Gambar 1. Dokumentasi Kegiatan</p>
-            </div>
-
-            <div class="sig-section flex justify-between px-4 mt-12">
-                <div class="text-center w-1/2">
-                    Mengetahui:<br>Koordinator BPP <span id="out_wilayah_kerja">Bola</span>
-                    <div class="h-24 flex items-center justify-center">
-                        <img id="out_img_ttd_koor" src="" class="max-h-20 hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="section-box">
+                <h3 class="text-blue-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-id-badge mr-2"></i> DATA PENYULUH</h3>
+                <div class="space-y-4">
+                    <div class="input-group">
+                        <label>Nama Lengkap</label>
+                        <select id="in_nama" onchange="updateDataPenyuluh()">
+                            <option value="">-- Pilih Nama --</option>
+                            <option>ABDUL RAHMAN, SP</option><option>ANDI LUTHFIAH, SP</option>
+                            <option>INDRA YULIANA, S.TP., M.Si.</option><option>NURUL FAHMI, S.P.</option>
+                            <option>REZKI RAHAYU, S.P.</option><option>RIZAL SMITH ANUGRAH SYAM, S.P.</option>
+                            <option>SUHADY HAMDAN, S.P.</option><option>SULFIANITA, S.P.</option><option>SURAHMAN, S.TP</option>
+                        </select>
                     </div>
-                    <div id="out_nama_koor" class="font-bold underline">H. ANDI BASO, S.P.</div>
-                    NIP. <span id="out_nip_koor">19710525 199803 1 010</span>
-                </div>
-                <div class="text-center w-1/2">
-                    <span id="out_tempat_ttd">Bola</span>, <span id="out_tgl_ttd"></span><br>
-                    Penyuluh Pertanian
-                    <div class="h-24 flex items-center justify-center">
-                        <img id="out_img_ttd_ppl" src="" class="max-h-20 hidden">
+                    <div class="input-group"><label>NIP</label><input type="text" id="in_nip" readonly class="opacity-50 text-gray-400"></div>
+                    <div class="input-group"><label>Pangkat / Golongan</label><input type="text" id="in_pangkat" oninput="updateLaporan()" value="Penata Muda, III/a"></div>
+                    <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
+                    <div class="input-group"><label>Wilayah BPP (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Cth: Bola"></div>
+                    
+                    <hr class="border-gray-700">
+                    <div class="input-group"><label>Nama Koordinator</label><input type="text" id="in_nama_k" oninput="updateLaporan()" value="Nama Koordinator"></div>
+                    <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_k" oninput="updateLaporan()" value="19xxxxxxxxxxxxxx"></div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
+                        <div class="input-group"><label class="text-[10px]">TTD Koord</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
                     </div>
-                    <div id="sig_nama" class="font-bold underline"></div>
-                    NIP. <span id="sig_nip"></span>
                 </div>
             </div>
+
+            <script>
+                for(let i=1; i<=3; i++){
+                    document.write(`
+                    <div class="section-box">
+                        <h3 class="text-orange-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-file-lines mr-2"></i> KEGIATAN ${i}</h3>
+                        <div class="space-y-3">
+                            <div class="input-group"><label>Materi</label><input type="text" id="materi_${i}" oninput="updateLaporan()" placeholder="Cth. Pengendalian Hama Penggerek Batang Padi"></div>
+                            <div class="input-group">
+                                <label>Metode</label>
+                                <select id="metode_${i}" onchange="updateLaporan()">
+                                    <option>Diskusi</option><option>Ceramah</option><option>Demonstrasi<option>Media cetak/Media Sosial</option>
+                                    <option>Anjangsana</option><option>Temu Wicara</option>
+                                </select>
+                            </div>
+                            <div class="input-group"><label>Lokasi / Kelompok</label><input type="text" id="lok_${i}" oninput="updateLaporan()" placeholder="Cth: Kelompok Tani Sukamaju"></div>
+                            <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="peserta_${i}" oninput="updateLaporan()" value="Cth. 15 Orang"></div>
+                            <div class="input-group"><label>Tanggal</label><input type="date" id="tgl_${i}" onchange="updateLaporan()"></div>
+                        </div>
+                    </div>
+                    `);
+                }
+            </script>
         </div>
+        <textarea id="h_1" class="hidden"></textarea><textarea id="h_2" class="hidden"></textarea><textarea id="h_3" class="hidden"></textarea>
     </div>
+</div>
 
-    <script>
-        const dataPenyuluh = {
-            "ABDUL RAHMAN, SP": { nip: "199009202020121001" },
-            "ANDI LUTHFIAH, SP": { nip: "199307162020122003" },
-            "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
-            "NURUL FAHMI, S.P.": { nip: "198911142020122002" },
-            "REZKI RAHAYU, S.P.": { nip: "199507052020122003" },
-            "RIZAL SMITH ANUGRAH SYAM, S.P.": { nip: "199005152020121001" },
-            "SUHADY HAMDAN, S.P.": { nip: "199202072020121001" },
-            "SULFIANITA, S.P.": { nip: "199505082020122004" },
-            "SURAHMAN, S.TP": { nip: "199203122020121003" }
-        };
+<div id="report-container"></div>
 
-        function updateDataPenyuluh() {
-            const nama = document.getElementById("in_nama").value;
-            document.getElementById("in_nip").value = dataPenyuluh[nama] ? dataPenyuluh[nama].nip : "";
-            updateLaporan();
+<script>
+    const dataPenyuluh = {
+        "ABDUL RAHMAN, SP": "199009202020121001", "ANDI LUTHFIAH, SP": "199307162020122003",
+        "INDRA YULIANA, S.TP., M.Si.": "199307062020122001", "NURUL FAHMI, S.P.": "198911142020122002",
+        "REZKI RAHAYU, S.P.": "199507052020122003", "RIZAL SMITH ANUGRAH SYAM, S.P.": "199005152020121001",
+        "SUHADY HAMDAN, S.P.": "199202072020121001", "SULFIANITA, S.P.": "199505082020122004", "SURAHMAN, S.TP": "199203122020121003"
+    };
+
+    let imgStore = { ttd_p: "", ttd_k: "" };
+
+    function readImage(input, type) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => { imgStore[type] = e.target.result; updateLaporan(); };
+            reader.readAsDataURL(input.files[0]);
         }
+    }
 
-        function handleFoto(input) {
-            const container = document.getElementById('foto_container');
-            const img = document.getElementById('img_preview');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => { img.src = e.target.result; container.classList.remove('hidden-element'); };
-                reader.readAsDataURL(input.files[0]);
-            } else { container.classList.add('hidden-element'); }
-        }
+    function updateDataPenyuluh() {
+        const nama = document.getElementById("in_nama").value;
+        document.getElementById("in_nip").value = dataPenyuluh[nama] || "";
+        updateLaporan();
+    }
 
-        function handleTTD(input, targetId) {
-            const img = document.getElementById(targetId);
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => { img.src = e.target.result; img.classList.remove('hidden'); };
-                reader.readAsDataURL(input.files[0]);
-            } else { img.classList.add('hidden'); }
-        }
-
-        function updateLaporan() {
-            const ids = ['nama', 'nip', 'jabatan', 'unit', 'kegiatan', 'lokasi', 'metode', 'peserta', 'hasil', 'tempat_ttd', 'nama_koor', 'nip_koor', 'wilayah_kerja'];
-            
-            ids.forEach(id => {
-                const val = document.getElementById('in_' + id)?.value || "";
-                const out = document.getElementById('out_' + id);
-                if (out) out.innerText = val;
-                if (id === 'nama') document.getElementById('sig_nama').innerText = val;
-                if (id === 'nip') document.getElementById('sig_nip').innerText = val;
+    async function generateAI() {
+        const btn = document.getElementById('btn-ai');
+        const loader = document.getElementById('loader');
+        const m1 = document.getElementById('materi_1').value;
+        const m2 = document.getElementById('materi_2').value;
+        const m3 = document.getElementById('materi_3').value;
+        if(!m1 || !m2 || !m3) return alert("Mohon isi minimal semua materi di Panel!");
+        
+        btn.disabled = true; loader.classList.remove('hidden');
+        const key = "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";
+        
+        try {
+            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+                body: JSON.stringify({ 
+                    model: "llama-3.3-70b-versatile", 
+                    messages: [{ role: "user", content: `Buat 3 narasi hasil kegiatan penyuluhan pertanian yang berbeda dalam bahasa Indonesia formal. Narasi 1: ${m1}, Narasi 2: ${m2}, Narasi 3: ${m3}. Pisahkan dengan tanda '###'.` }] 
+                })
             });
+            const data = await res.json();
+            const parts = data.choices[0].message.content.split('###');
+            document.getElementById('h_1').value = parts[0]?.trim();
+            document.getElementById('h_2').value = parts[1]?.trim();
+            document.getElementById('h_3').value = parts[2]?.trim();
+            updateLaporan();
+            alert("✅ Narasi 3 Laporan Berbeda Berhasil Dibuat!");
+        } catch (e) { alert("Koneksi AI Terputus. Coba lagi."); }
+        finally { btn.disabled = false; loader.classList.add('hidden'); }
+    }
 
-            const tglManual = document.getElementById('in_tgl_ttd_manual').value;
-            let d = tglManual ? new Date(tglManual) : new Date();
-            const formatTgl = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-            document.getElementById('out_tgl').innerText = formatTgl;
-            document.getElementById('out_tgl_ttd').innerText = formatTgl;
+    function updateLaporan() {
+        const container = document.getElementById('report-container');
+        container.innerHTML = "";
+        
+        const nama = document.getElementById('in_nama').value || "..........................";
+        const nip = document.getElementById('in_nip').value || "..........................";
+        const pangkat = document.getElementById('in_pangkat').value || "..........................";
+        const jabatan = document.getElementById('in_jabatan').value || "..........................";
+        const wilayah = document.getElementById('in_wilayah').value || "........";
+        
+        // Data Koordinator manual
+        const namaK = document.getElementById('in_nama_k').value || "..........................";
+        const nipK = document.getElementById('in_nip_k').value || "..........................";
+
+        for (let i = 1; i <= 3; i++) {
+            const materi = document.getElementById(`materi_${i}`).value || "..........................";
+            const metode = document.getElementById(`metode_${i}`).value || "..........................";
+            const lok = document.getElementById(`lok_${i}`).value || "..........................";
+            const pes = document.getElementById(`peserta_${i}`).value || "..........................";
+            const tglRaw = document.getElementById(`tgl_${i}`).value;
+            const tgl = tglRaw ? new Date(tglRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
+            const hasil = document.getElementById(`h_${i}`).value || "(Klik tombol Generate AI untuk mengisi narasi hasil kegiatan secara otomatis)";
+
+            container.innerHTML += `
+                <div class="report-page">
+                    <div class="text-center font-bold text-lg mb-8 uppercase underline">LAPORAN KEGIATAN DISEMINASI INFORMASI PERTANIAN</div>
+                    <table>
+                        <tr><td width="30" class="font-bold">1.</td><td colspan="2" class="font-bold">Penyuluh Pertanian</td></tr>
+                        <tr><td></td><td width="180">a. Nama / NIP</td><td>: ${nama} / NIP. ${nip}</td></tr>
+                        <tr><td></td><td>b. Pangkat / Golongan</td><td>: ${pangkat}</td></tr>
+                        <tr><td></td><td>c. Jabatan</td><td>: ${jabatan}</td></tr>
+                        <tr><td></td><td>d. Unit Kerja</td><td>: KEMENTERIAN PERTANIAN RI</td></tr>
+                        <tr><td class="font-bold pt-4">2.</td><td class="font-bold pt-4">Dasar Pelaksanaan</td><td class="pt-4">: Indikator Kinerja Penyuluh Pertanian</td></tr>
+                        <tr><td class="font-bold pt-2">3.</td><td class="font-bold pt-2">Materi Diseminasi</td><td class="pt-2">: <b>${materi}</b></td></tr>
+                        <tr><td class="font-bold pt-2">4.</td><td colspan="2" class="font-bold pt-2">Pelaksanaan Kegiatan</td></tr>
+                        <tr><td></td><td>a. Waktu</td><td>: ${tgl}</td></tr>
+                        <tr><td></td><td>b. Tempat/Lokasi</td><td>: ${lok}</td></tr>
+                        <tr><td></td><td>c. Metode</td><td>: ${metode}</td></tr>
+                        <tr><td></td><td>d. Peserta</td><td>: ${pes}</td></tr>
+                        <tr><td class="font-bold pt-6">5.</td><td class="font-bold pt-6">Hasil Kegiatan</td><td class="pt-6 text-justify leading-relaxed">${hasil}</td></tr>
+                    </table>
+
+                    <div class="flex justify-between mt-24 px-10">
+                        <div class="text-center w-[45%]">
+                            Mengetahui,<br>Koordinator BPP ${wilayah}
+                            <div class="sig-box">${imgStore.ttd_k ? `<img src="${imgStore.ttd_k}" class="ttd-img">` : ''}</div>
+                            <b class="underline">${namaK}</b><br>NIP. ${nipK}
+                        </div>
+                        <div class="text-center w-[45%]">
+                            Bola, ${tgl}<br>Penyuluh Pertanian
+                            <div class="sig-box">${imgStore.ttd_p ? `<img src="${imgStore.ttd_p}" class="ttd-img">` : ''}</div>
+                            <b class="underline">${nama}</b><br>NIP. ${nip}
+                        </div>
+                    </div>
+                </div>
+            `;
         }
-
-        async function generateAI() {
-            const btn = document.getElementById('btn-ai');
-            const loader = document.getElementById('loader');
-            const materi = document.getElementById('in_kegiatan').value;
-            const lokasi = document.getElementById('in_lokasi').value;
-            const metode = document.getElementById('in_metode').value;
-            const key = "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"; 
-
-            if(!materi || !lokasi) return alert("Mohon lengkapi Materi dan Lokasi terlebih dahulu.");
-            
-            btn.disabled = true; loader.classList.remove('hidden');
-
-            try {
-                const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
-                    body: JSON.stringify({ 
-                        model: "llama-3.3-70b-versatile", 
-                        messages: [{ role: "user", content: `Buat narasi laporan hasil kegiatan diseminasi pertanian tentang "${materi}" yang dilaksanakan di "${lokasi}" dengan metode "${metode}". Narasi harus formal, profesional, dan dalam bentuk paragraf deskripsi tanpa poin-poin.` }]
-                    })
-                });
-                const data = await res.json();
-                const deskripsi = data.choices[0].message.content;
-                document.getElementById('in_hasil').value = deskripsi;
-                updateLaporan();
-            } catch (e) { alert("Gagal memanggil AI. Gunakan input manual."); } 
-            finally { btn.disabled = false; loader.classList.add('hidden'); }
-        }
-
-        window.onload = updateLaporan;
-    </script>
+    }
+    window.onload = updateLaporan;
+</script>
 </body>
 </html>
