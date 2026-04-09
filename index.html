@@ -61,15 +61,26 @@
             <div class="section-box">
                 <h3 class="text-blue-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-id-badge mr-2"></i> DATA PENYULUH</h3>
                 <div class="space-y-4">
-                    <div class="input-group">
-                        <label>Nama Lengkap</label>
-                        <select id="in_nama" onchange="updateDataPenyuluh()">
-                            <option value="">-- Pilih Nama --</option>
-                            <option>ABDUL RAHMAN, SP</option><option>ANDI LUTHFIAH, SP</option>
-                            <option>INDRA YULIANA, S.TP., M.Si.</option><option>NURUL FAHMI, S.P.</option>
-                            <option>REZKI RAHAYU, S.P.</option><option>RIZAL SMITH ANUGRAH SYAM, S.P.</option>
-                            <option>SUHADY HAMDAN, S.P.</option><option>SULFIANITA, S.P.</option><option>SURAHMAN, S.TP</option>
-                        </select>
+                   <div class="input-group">
+    <label>Nama Lengkap</label>
+    <input type="text" id="in_nama" list="daftar_nama" oninput="updateDataPenyuluh()" placeholder="Pilih atau Ketik Nama">
+    <datalist id="daftar_nama">
+        <option value="ABDUL RAHMAN, SP">
+        <option value="ANDI LUTHFIAH, SP">
+        <option value="INDRA YULIANA, S.TP., M.Si.">
+        <option value="NURUL FAHMI, S.P.">
+        <option value="REZKI RAHAYU, S.P.">
+        <option value="RIZAL SMITH ANUGRAH SYAM, S.P.">
+        <option value="SUHADY HAMDAN, S.P.">
+        <option value="SULFIANITA, S.P.">
+        <option value="SURAHMAN, S.TP">
+    </datalist>
+</div>
+
+<div class="input-group">
+    <label>NIP</label>
+    <input type="text" id="in_nip" oninput="updateLaporan()" placeholder="Masukkan NIP">
+</div>
                     </div>
                     <div class="input-group"><label>NIP</label><input type="text" id="in_nip" readonly class="opacity-50 text-gray-400"></div>
                     <div class="input-group"><label>Pangkat / Golongan</label><input type="text" id="in_pangkat" oninput="updateLaporan()" value="Penata Muda, III/a"></div>
@@ -135,10 +146,18 @@
     }
 
     function updateDataPenyuluh() {
-        const nama = document.getElementById("in_nama").value;
-        document.getElementById("in_nip").value = dataPenyuluh[nama] || "";
-        updateLaporan();
-    }
+    const namaInput = document.getElementById("in_nama").value;
+    const nipInput = document.getElementById("in_nip");
+    
+    // Jika nama yang diketik ada di dalam daftar database kita
+    if (dataPenyuluh[namaInput]) {
+        nipInput.value = dataPenyuluh[namaInput];
+    } 
+    // Jika tidak ada di daftar, biarkan user mengisi manual NIP-nya
+    // Jangan mengosongkan NIP secara otomatis saat mengetik agar user bisa lanjut isi NIP manual
+    
+    updateLaporan();
+}
 
     async function generateAI() {
         const btn = document.getElementById('btn-ai');
