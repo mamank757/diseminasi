@@ -186,7 +186,7 @@
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
                 body: JSON.stringify({ 
                     model: "llama-3.3-70b-versatile", 
-                    messages: [{ role: "user", content: `Buat 3 narasi hasil kegiatan penyuluhan pertanian yang berbeda dalam bahasa Indonesia formal. Narasi 1: ${m1}, Narasi 2: ${m2}, Narasi 3: ${m3}. Pisahkan dengan tanda '###'.` }] 
+                    messages: [{ role: "user", content: `Buat 3 narasi singkat hasil kegiatan penyuluhan pertanian yang berbeda dalam bahasa Indonesia formal. Narasi 1: ${m1}, Narasi 2: ${m2}, Narasi 3: ${m3}. Pisahkan dengan tanda '###'.` }] 
                 })
             });
             const data = await res.json();
