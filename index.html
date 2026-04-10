@@ -58,46 +58,48 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="section-box">
-                <h3 class="text-blue-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-id-badge mr-2"></i> DATA PENYULUH</h3>
-                <div class="space-y-4">
-                   <div class="input-group">
-    <label>Nama Lengkap</label>
-    <input type="text" id="in_nama" list="daftar_nama" oninput="updateDataPenyuluh()" placeholder="Pilih atau Ketik Nama">
-    <datalist id="daftar_nama">
-        <option value="ABDUL RAHMAN, SP">
-        <option value="ANDI LUTHFIAH, SP">
-        <option value="INDRA YULIANA, S.TP., M.Si.">
-        <option value="NURUL FAHMI, S.P.">
-        <option value="REZKI RAHAYU, S.P.">
-        <option value="RIZAL SMITH ANUGRAH SYAM, S.P.">
-        <option value="SUHADY HAMDAN, S.P.">
-        <option value="SULFIANITA, S.P.">
-        <option value="SURAHMAN, S.TP">
-    </datalist>
+           <div class="section-box">
+    <h3 class="text-blue-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-id-badge mr-2"></i> DATA PENYULUH</h3>
+    <div class="space-y-4">
+        <div class="input-group">
+            <label>Nama Lengkap</label>
+            <input type="text" id="in_nama" list="daftar_nama" oninput="updateDataPenyuluh()" placeholder="Pilih atau Ketik Nama">
+            <datalist id="daftar_nama">
+                <option value="ABDUL RAHMAN, SP"></option>
+                <option value="A. FATHUR MUH. ISHAQ B, S.ST., M.Si"></option>
+                <option value="ANDI LUTHFIAH, SP"></option>
+                <option value="FITRIYANTI HASNURI, S.TP"></option>
+                <option value="INDRA YULIANA, S.TP., M.Si."></option>
+                <option value="MIFTAHUL KHAIR, S.P."></option>
+                <option value="NURUL FAHMI, S.P."></option>
+                <option value="REZKI RAHAYU, S.P."></option>
+                <option value="RIZAL SMITH ANUGRAH SYAM, S.P."></option>
+                <option value="SUHADY HAMDAN, S.P."></option>
+                <option value="SULFIANITA, S.P."></option>
+                <option value="SURAHMAN, S.TP"></option>
+                <option value="UMAR, SP"></option>
+            </datalist>
+        </div>
+
+        <div class="input-group">
+            <label>NIP</label>
+            <input type="text" id="in_nip" oninput="updateLaporan()" placeholder="NIP akan terisi otomatis">
+        </div>
+        
+        <div class="input-group"><label>Pangkat / Golongan</label><input type="text" id="in_pangkat" oninput="updateLaporan()" value="Penata Muda, III/a"></div>
+        <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
+        <div class="input-group"><label>Wilayah BPP (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Cth: Bola"></div>
+        
+        <hr class="border-gray-700">
+        <div class="input-group"><label>Nama Koordinator</label><input type="text" id="in_nama_k" oninput="updateLaporan()" value="Nama Koordinator"></div>
+        <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_k" oninput="updateLaporan()" value="19xxxxxxxxxxxxxx"></div>
+
+        <div class="grid grid-cols-2 gap-2">
+            <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
+            <div class="input-group"><label class="text-[10px]">TTD Koord</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
+        </div>
+    </div>
 </div>
-
-<div class="input-group">
-    <label>NIP</label>
-    <input type="text" id="in_nip" oninput="updateLaporan()" placeholder="Masukkan NIP">
-</div>
-                    </div>
-                    <div class="input-group"><label>NIP</label><input type="text" id="in_nip" readonly class="opacity-50 text-gray-400"></div>
-                    <div class="input-group"><label>Pangkat / Golongan</label><input type="text" id="in_pangkat" oninput="updateLaporan()" value="Penata Muda, III/a"></div>
-                    <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
-                    <div class="input-group"><label>Wilayah BPP (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Cth: Bola"></div>
-                    
-                    <hr class="border-gray-700">
-                    <div class="input-group"><label>Nama Koordinator</label><input type="text" id="in_nama_k" oninput="updateLaporan()" value="Nama Koordinator"></div>
-                    <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_k" oninput="updateLaporan()" value="19xxxxxxxxxxxxxx"></div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
-                        <div class="input-group"><label class="text-[10px]">TTD Koord</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
-                    </div>
-                </div>
-            </div>
-
             <script>
                 for(let i=1; i<=3; i++){
                     document.write(`
@@ -129,11 +131,20 @@
 
 <script>
     const dataPenyuluh = {
-        "ABDUL RAHMAN, SP": "199009202020121001", "ANDI LUTHFIAH, SP": "199307162020122003",
-        "INDRA YULIANA, S.TP., M.Si.": "199307062020122001", "NURUL FAHMI, S.P.": "198911142020122002",
-        "REZKI RAHAYU, S.P.": "199507052020122003", "RIZAL SMITH ANUGRAH SYAM, S.P.": "199005152020121001",
-        "SUHADY HAMDAN, S.P.": "199202072020121001", "SULFIANITA, S.P.": "199505082020122004", "SURAHMAN, S.TP": "199203122020121003"
-    };
+        "ABDUL RAHMAN, SP": { nip: "199009202020121001" },
+    "A. FATHUR MUH. ISHAQ B, S.ST., M.Si": { nip: "199604112020121001" },
+    "ANDI LUTHFIAH, SP": { nip: "199307162020122003" },
+    "FITRIYANTI HASNURI, S.TP": { nip: "199409042020122001" },
+    "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
+    "MIFTAHUL KHAIR, S.P.": { nip: "199311192020122003" },
+    "NURUL FAHMI, S.P.": { nip: "198911142020122002" },
+    "REZKI RAHAYU, S.P.": { nip: "199507052020122003" },
+    "RIZAL SMITH ANUGRAH SYAM, S.P.": { nip: "199005152020121001" },
+    "SUHADY HAMDAN, S.P.": { nip: "199202072020121001" },
+    "SULFIANITA, S.P.": { nip: "199505082020122004" },
+    "SURAHMAN, S.TP": { nip: "199203122020121003" },
+    "UMAR, SP": { nip: "199408272020121001" }
+};
 
     let imgStore = { ttd_p: "", ttd_k: "" };
 
@@ -145,17 +156,16 @@
         }
     }
 
-    function updateDataPenyuluh() {
+   function updateDataPenyuluh() {
     const namaInput = document.getElementById("in_nama").value;
     const nipInput = document.getElementById("in_nip");
     
-    // Jika nama yang diketik ada di dalam daftar database kita
+    // Cek apakah nama ada di database dataPenyuluh
     if (dataPenyuluh[namaInput]) {
-        nipInput.value = dataPenyuluh[namaInput];
+        nipInput.value = dataPenyuluh[namaInput].nip; // Ambil properti .nip
     } 
-    // Jika tidak ada di daftar, biarkan user mengisi manual NIP-nya
-    // Jangan mengosongkan NIP secara otomatis saat mengetik agar user bisa lanjut isi NIP manual
     
+    // Jalankan update laporan agar tampilan kertas di bawah langsung berubah
     updateLaporan();
 }
 
