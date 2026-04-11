@@ -11,7 +11,6 @@
         * { box-sizing: border-box; }
         body { font-family: 'Times New Roman', Times, serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 0; }
         
-        /* Preview Kertas A4 */
         .report-page {
             background: white; width: 210mm; min-height: 297mm;
             padding: 20mm; margin: 20px auto; box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -31,14 +30,12 @@
             .report-page { margin: 0 !important; box-shadow: none !important; border: none; }
         }
 
-        /* UI Styling */
         .input-group label { display: block; font-size: 0.7rem; font-weight: bold; color: #3b82f6; margin-bottom: 2px; text-transform: uppercase; }
-        .input-group input, .input-group select { 
+        .input-group input, .input-group select, .input-group textarea { 
             width: 100%; background-color: #1e1e1e; border: 1px solid #333; color: #fff;
             padding: 8px; border-radius: 6px; font-size: 0.85rem; transition: all 0.3s;
         }
-        .input-group input:focus { border-color: #3b82f6; outline: none; background-color: #252525; }
-        .section-box { background: #1e1e1e; padding: 15px; rounded-xl; border: 1px solid #333; height: 100%; }
+        .section-box { background: #1e1e1e; padding: 15px; border-radius: 12px; border: 1px solid #333; height: auto; }
     </style>
 </head>
 <body>
@@ -48,105 +45,144 @@
         <div class="flex flex-col md:flex-row justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-white"><i class="fa-solid fa-file-invoice-dt mr-3 text-blue-500"></i>FORM 51 PPL MILENIAL</h1>
             <div class="flex gap-3 mt-4 md:mt-0">
+                <button onclick="tambahKegiatan()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold transition">
+                    <i class="fa-solid fa-plus mr-2"></i> TAMBAH FORM
+                </button>
                 <button onclick="generateAI()" id="btn-ai" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-bold transition flex items-center">
                     <span id="loader" class="hidden mr-2">🌀</span> ✨ GENERATE NARASI AI
                 </button>
                 <button onclick="window.print()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg">
-                    <i class="fa-solid fa-print mr-2"></i> CETAK LAPORAN
+                    <i class="fa-solid fa-print mr-2"></i> CETAK
                 </button>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-           <div class="section-box">
-    <h3 class="text-blue-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-id-badge mr-2"></i> DATA PENYULUH</h3>
-    <div class="space-y-4">
-        <div class="input-group">
-            <label>Nama Lengkap</label>
-            <input type="text" id="in_nama" list="daftar_nama" oninput="updateDataPenyuluh()" placeholder="Pilih atau Ketik Nama">
-            <datalist id="daftar_nama">
-                <option value="ABDUL RAHMAN, SP"></option>
-                <option value="A. FATHUR MUH. ISHAQ B, S.ST., M.Si"></option>
-                <option value="ANDI LUTHFIAH, SP"></option>
-                <option value="FITRIYANTI HASNURI, S.TP"></option>
-                <option value="INDRA YULIANA, S.TP., M.Si."></option>
-                <option value="MIFTAHUL KHAIR, S.P."></option>
-                <option value="NURUL FAHMI, S.P."></option>
-                <option value="REZKI RAHAYU, S.P."></option>
-                <option value="RIZAL SMITH ANUGRAH SYAM, S.P."></option>
-                <option value="SUHADY HAMDAN, S.P."></option>
-                <option value="SULFIANITA, S.P."></option>
-                <option value="SURAHMAN, S.TP"></option>
-                <option value="UMAR, SP"></option>
-            </datalist>
-        </div>
-
-        <div class="input-group">
-            <label>NIP</label>
-            <input type="text" id="in_nip" oninput="updateLaporan()" placeholder="NIP akan terisi otomatis">
-        </div>
-        
-        <div class="input-group"><label>Pangkat / Golongan</label><input type="text" id="in_pangkat" oninput="updateLaporan()" value="Penata Muda, III/a"></div>
-        <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
-        <div class="input-group"><label>Wilayah BPP (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Cth: Bola"></div>
-        
-        <hr class="border-gray-700">
-        <div class="input-group"><label>Nama Koordinator</label><input type="text" id="in_nama_k" oninput="updateLaporan()" value="Nama Koordinator"></div>
-        <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_k" oninput="updateLaporan()" value="19xxxxxxxxxxxxxx"></div>
-
-        <div class="grid grid-cols-2 gap-2">
-            <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
-            <div class="input-group"><label class="text-[10px]">TTD Koord</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
-        </div>
-    </div>
-</div>
-            <script>
-                for(let i=1; i<=3; i++){
-                    document.write(`
-                    <div class="section-box">
-                        <h3 class="text-orange-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-file-lines mr-2"></i> KEGIATAN ${i}</h3>
-                        <div class="space-y-3">
-                            <div class="input-group"><label>Materi</label><input type="text" id="materi_${i}" oninput="updateLaporan()" placeholder="Cth. Pengendalian Hama"></div>
-                            <div class="input-group">
-                                <label>Metode</label>
-                                <select id="metode_${i}" onchange="updateLaporan()">
-                                    <option>Diskusi</option><option>Ceramah</option><option>Demonstrasi</option>
-                                    <option>Media cetak/Media Sosial</option><option>Anjangsana</option><option>Temu Wicara</option>
-                                </select>
-                            </div>
-                            <div class="input-group"><label>Lokasi / Kelompok</label><input type="text" id="lok_${i}" oninput="updateLaporan()" placeholder="Cth: Kelompok Tani Sukamaju"></div>
-                            <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="peserta_${i}" oninput="updateLaporan()" value="15 Orang"></div>
-                            <div class="input-group"><label>Tanggal</label><input type="date" id="tgl_${i}" onchange="updateLaporan()"></div>
-                        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="section-box">
+                <h3 class="text-blue-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-id-badge mr-2"></i> DATA PENYULUH</h3>
+                <div class="space-y-4">
+                    <div class="input-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="in_nama" list="daftar_nama" oninput="updateDataPenyuluh()" placeholder="Pilih Nama">
+                        <datalist id="daftar_nama">
+                            <option value="ABDUL RAHMAN, SP">
+                            <option value="A. FATHUR MUH. ISHAQ B, S.ST., M.Si">
+                            <option value="ANDI LUTHFIAH, SP">
+                            <option value="FITRIYANTI HASNURI, S.TP">
+                            <option value="INDRA YULIANA, S.TP., M.Si.">
+                            <option value="MIFTAHUL KHAIR, S.P.">
+                            <option value="NURUL FAHMI, S.P.">
+                            <option value="REZKI RAHAYU, S.P.">
+                            <option value="RIZAL SMITH ANUGRAH SYAM, S.P.">
+                            <option value="SUHADY HAMDAN, S.P.">
+                            <option value="SULFIANITA, S.P.">
+                            <option value="SURAHMAN, S.TP">
+                            <option value="UMAR, SP">
+                        </datalist>
                     </div>
-                    `);
-                }
-            </script>
+                    <div class="input-group"><label>NIP</label><input type="text" id="in_nip" oninput="updateLaporan()"></div>
+                    <div class="input-group"><label>Pangkat/Gol</label><input type="text" id="in_pangkat" oninput="updateLaporan()" value="Penata Muda, III/a"></div>
+                    <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
+                    <div class="input-group"><label>Wilayah (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Bola"></div>
+                    <hr class="border-gray-700">
+                    <div class="input-group"><label>Koordinator</label><input type="text" id="in_nama_k" oninput="updateLaporan()" value="Samaila"></div>
+                    <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_k" oninput="updateLaporan()"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
+                        <div class="input-group"><label class="text-[10px]">TTD Koord</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="input-kegiatan-container" class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                </div>
         </div>
-        <textarea id="h_1" class="hidden"></textarea><textarea id="h_2" class="hidden"></textarea><textarea id="h_3" class="hidden"></textarea>
     </div>
 </div>
 
 <div id="report-container"></div>
 
 <script>
+    let jumlahKegiatan = 1;
     const dataPenyuluh = {
         "ABDUL RAHMAN, SP": { nip: "199009202020121001" },
-    "A. FATHUR MUH. ISHAQ B, S.ST., M.Si": { nip: "199604112020121001" },
-    "ANDI LUTHFIAH, SP": { nip: "199307162020122003" },
-    "FITRIYANTI HASNURI, S.TP": { nip: "199409042020122001" },
-    "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
-    "MIFTAHUL KHAIR, S.P.": { nip: "199311192020122003" },
-    "NURUL FAHMI, S.P.": { nip: "198911142020122002" },
-    "REZKI RAHAYU, S.P.": { nip: "199507052020122003" },
-    "RIZAL SMITH ANUGRAH SYAM, S.P.": { nip: "199005152020121001" },
-    "SUHADY HAMDAN, S.P.": { nip: "199202072020121001" },
-    "SULFIANITA, S.P.": { nip: "199505082020122004" },
-    "SURAHMAN, S.TP": { nip: "199203122020121003" },
-    "UMAR, SP": { nip: "199408272020121001" }
-};
+        "A. FATHUR MUH. ISHAQ B, S.ST., M.Si": { nip: "199604112020121001" },
+        "ANDI LUTHFIAH, SP": { nip: "199307162020122003" },
+        "FITRIYANTI HASNURI, S.TP": { nip: "199409042020122001" },
+        "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
+        "MIFTAHUL KHAIR, S.P.": { nip: "199311192020122003" },
+        "NURUL FAHMI, S.P.": { nip: "198911142020122002" },
+        "REZKI RAHAYU, S.P.": { nip: "199507052020122003" },
+        "RIZAL SMITH ANUGRAH SYAM, S.P.": { nip: "199005152020121001" },
+        "SUHADY HAMDAN, S.P.": { nip: "199202072020121001" },
+        "SULFIANITA, S.P.": { nip: "199505082020122004" },
+        "SURAHMAN, S.TP": { nip: "199203122020121003" },
+        "UMAR, SP": { nip: "199408272020121001" }
+    };
 
     let imgStore = { ttd_p: "", ttd_k: "" };
+
+    function renderInputKegiatan() {
+        const container = document.getElementById('input-kegiatan-container');
+        // Simpan nilai lama agar tidak hilang saat re-render
+        let currentValues = [];
+        for(let i=1; i<=20; i++){
+            if(document.getElementById(`materi_${i}`)){
+                currentValues[i] = {
+                    materi: document.getElementById(`materi_${i}`).value,
+                    metode: document.getElementById(`metode_${i}`).value,
+                    lok: document.getElementById(`lok_${i}`).value,
+                    peserta: document.getElementById(`peserta_${i}`).value,
+                    tgl: document.getElementById(`tgl_${i}`).value,
+                    hasil: document.getElementById(`h_${i}`).value
+                };
+            }
+        }
+
+        let html = '';
+        for(let i=1; i<=jumlahKegiatan; i++){
+            const val = currentValues[i] || {materi:'', metode:'Diskusi', lok:'', peserta:'15 Orang', tgl:'', hasil:''};
+            html += `
+            <div class="section-box relative">
+                <button onclick="hapusKegiatan(${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 ${jumlahKegiatan === 1 ? 'hidden' : ''}">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+                <h3 class="text-orange-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-file-lines mr-2"></i> KEGIATAN ${i}</h3>
+                <div class="space-y-3">
+                    <div class="input-group"><label>Materi</label><input type="text" id="materi_${i}" oninput="updateLaporan()" value="${val.materi}"></div>
+                    <div class="input-group">
+                        <label>Metode</label>
+                        <select id="metode_${i}" onchange="updateLaporan()">
+                            <option ${val.metode=='Diskusi'?'selected':''}>Diskusi</option>
+                            <option ${val.metode=='Ceramah'?'selected':''}>Ceramah</option>
+                            <option ${val.metode=='Demonstrasi'?'selected':''}>Demonstrasi</option>
+                            <option ${val.metode=='Media cetak/Media Sosial'?'selected':''}>Media cetak/Media Sosial</option>
+                            <option ${val.metode=='Anjangsana'?'selected':''}>Anjangsana</option>
+                            <option ${val.metode=='Temu Wicara'?'selected':''}>Temu Wicara</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Lokasi / Kelompok</label><input type="text" id="lok_${i}" oninput="updateLaporan()" value="${val.lok}"></div>
+                    <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="peserta_${i}" oninput="updateLaporan()" value="${val.peserta}"></div>
+                    <div class="input-group"><label>Tanggal</label><input type="date" id="tgl_${i}" onchange="updateLaporan()" value="${val.tgl}"></div>
+                    <textarea id="h_${i}" class="hidden">${val.hasil}</textarea>
+                </div>
+            </div>`;
+        }
+        container.innerHTML = html;
+        updateLaporan();
+    }
+
+    function tambahKegiatan() {
+        jumlahKegiatan++;
+        renderInputKegiatan();
+    }
+
+    function hapusKegiatan(index) {
+        if(jumlahKegiatan > 1) {
+            jumlahKegiatan--;
+            renderInputKegiatan();
+        }
+    }
 
     function readImage(input, type) {
         if (input.files && input.files[0]) {
@@ -156,52 +192,68 @@
         }
     }
 
-   function updateDataPenyuluh() {
-    const namaInput = document.getElementById("in_nama").value;
-    const nipInput = document.getElementById("in_nip");
-    
-    // Cek apakah nama ada di database dataPenyuluh
-    if (dataPenyuluh[namaInput]) {
-        nipInput.value = dataPenyuluh[namaInput].nip; // Ambil properti .nip
-    } 
-    
-    // Jalankan update laporan agar tampilan kertas di bawah langsung berubah
-    updateLaporan();
-}
+    function updateDataPenyuluh() {
+        const namaInput = document.getElementById("in_nama").value;
+        if (dataPenyuluh[namaInput]) {
+            document.getElementById("in_nip").value = dataPenyuluh[namaInput].nip;
+        }
+        updateLaporan();
+    }
 
     async function generateAI() {
         const btn = document.getElementById('btn-ai');
         const loader = document.getElementById('loader');
-        const m1 = document.getElementById('materi_1').value;
-        const m2 = document.getElementById('materi_2').value;
-        const m3 = document.getElementById('materi_3').value;
-        if(!m1 || !m2 || !m3) return alert("Mohon isi minimal semua materi di Panel!");
+        let promptMateri = "";
         
+        for(let i=1; i<=jumlahKegiatan; i++){
+            const m = document.getElementById(`materi_${i}`).value;
+            if(!m) return alert(`Isi materi kegiatan ${i} terlebih dahulu!`);
+            promptMateri += `Narasi ${i}: ${m}, `;
+        }
+
         btn.disabled = true; loader.classList.remove('hidden');
         const key = "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";
-        
-        try {
-            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
-                body: JSON.stringify({ 
-                    model: "llama-3.3-70b-versatile", 
-                    messages: [{ role: "user", content: `Buat 3 narasi singkat hasil kegiatan penyuluhan pertanian yang berbeda dalam bahasa Indonesia formal. Narasi 1: ${m1}, Narasi 2: ${m2}, Narasi 3: ${m3}. Pisahkan dengan tanda '###'.` }] 
-                })
-            });
-            const data = await res.json();
-            const parts = data.choices[0].message.content.split('###');
-            document.getElementById('h_1').value = parts[0]?.trim();
-            document.getElementById('h_2').value = parts[1]?.trim();
-            document.getElementById('h_3').value = parts[2]?.trim();
-            updateLaporan();
-            
-            // PESAN SETELAH BERHASIL GENERATE AI
-            alert("✨ Berhasil! Narasi AI untuk 3 halaman telah diperbarui.");
-            
-        } catch (e) { alert("Koneksi AI Terputus. Coba lagi."); }
-        finally { btn.disabled = false; loader.classList.add('hidden'); }
+
+       try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${key}` 
+        },
+        body: JSON.stringify({ 
+            model: "llama-3.3-70b-versatile", 
+            messages: [
+                { 
+                    role: "system", 
+                    content: "Anda adalah asisten pembuat laporan pertanian. Berikan hasil narasi LANGSUNG tanpa kalimat pembuka/penutup. Hanya teks narasi yang dipisahkan dengan ###." 
+                },
+                { 
+                    role: "user", 
+                    content: `Buat ${jumlahKegiatan} narasi hasil kegiatan PPL. Materi: ${promptMateri}. Syarat: Bahasa formal, minimal 3 kalimat per narasi, pisahkan HANYA dengan tanda '###' tanpa teks tambahan lain.` 
+                }
+            ]
+        }) // Menutup JSON.stringify
+    }); // Menutup fetch
+
+    const data = await res.json();
+    
+    // Opsional: Tambahan filter untuk memastikan teks bersih dari embel-embel
+    let aiResponse = data.choices[0].message.content;
+    const parts = aiResponse.split('###');
+
+    for(let i=1; i<=jumlahKegiatan; i++){
+        // Kita gunakan .trim() untuk membuang spasi kosong di awal/akhir narasi
+        document.getElementById(`h_${i}`).value = parts[i-1]?.trim() || "Gagal generate narasi.";
     }
+    
+    updateLaporan();
+    alert(`✨ Berhasil! ${jumlahKegiatan} narasi telah dibuat.`);
+
+} catch (e) { 
+    console.error(e);
+    alert("Koneksi AI Terputus. Silakan coba lagi."); 
+}
 
     function updateLaporan() {
         const container = document.getElementById('report-container');
@@ -212,18 +264,17 @@
         const pangkat = document.getElementById('in_pangkat').value || "..........................";
         const jabatan = document.getElementById('in_jabatan').value || "..........................";
         const wilayah = document.getElementById('in_wilayah').value || "........";
-        
         const namaK = document.getElementById('in_nama_k').value || "..........................";
         const nipK = document.getElementById('in_nip_k').value || "..........................";
 
-        for (let i = 1; i <= 3; i++) {
-            const materi = document.getElementById(`materi_${i}`).value || "..........................";
-            const metode = document.getElementById(`metode_${i}`).value || "..........................";
-            const lok = document.getElementById(`lok_${i}`).value || "..........................";
-            const pes = document.getElementById(`peserta_${i}`).value || "..........................";
-            const tglRaw = document.getElementById(`tgl_${i}`).value;
+        for (let i = 1; i <= jumlahKegiatan; i++) {
+            const materi = document.getElementById(`materi_${i}`)?.value || "..........................";
+            const metode = document.getElementById(`metode_${i}`)?.value || "..........................";
+            const lok = document.getElementById(`lok_${i}`)?.value || "..........................";
+            const pes = document.getElementById(`peserta_${i}`)?.value || "..........................";
+            const tglRaw = document.getElementById(`tgl_${i}`)?.value;
             const tgl = tglRaw ? new Date(tglRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
-            const hasil = document.getElementById(`h_${i}`).value || "(Klik tombol Generate AI untuk mengisi narasi hasil kegiatan secara otomatis)";
+            const hasil = document.getElementById(`h_${i}`)?.value || "(Klik tombol Generate AI)";
 
             container.innerHTML += `
                 <div class="report-page">
@@ -256,11 +307,11 @@
                             <b class="underline uppercase">${nama}</b><br>NIP. ${nip}
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
     }
-    window.onload = updateLaporan;
+
+    window.onload = renderInputKegiatan;
 </script>
 </body>
 </html>
