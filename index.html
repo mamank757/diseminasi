@@ -247,7 +247,7 @@
             alert(`✨ Berhasil! ${jumlahKegiatan} narasi telah dibuat.`);
         } catch (e) { 
             console.error(e);
-            alert("Koneksi AI Terputus. Silakan coba lagi."); 
+            alert("AI tidak merespon karena pengguna banyak. Silakan coba lagi."); 
         } finally {
             btn.disabled = false;
             loader.classList.add('hidden');
