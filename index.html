@@ -85,8 +85,18 @@
                     <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
                     <div class="input-group"><label>Wilayah (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Bola"></div>
                     <hr class="border-gray-700">
-                    <div class="input-group"><label>Koordinator</label><input type="text" id="in_nama_k" oninput="updateLaporan()" value="Samaila"></div>
-                    <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_k" oninput="updateLaporan()"></div>
+                    <div class="input-group">
+    <label>Jabatan Penandatangan (Kiri)</label>
+    <input type="text" id="in_jabatan_k" oninput="updateLaporan()" placeholder="Koordinator BPP Bola">
+</div>
+<div class="input-group">
+    <label>Nama Penandatangan</label>
+    <input type="text" id="in_nama_k" oninput="updateLaporan()" placeholder="Samaila">
+</div>
+<div class="input-group">
+    <label>NIP/ID Penandatangan</label>
+    <input type="text" id="in_nip_k" oninput="updateLaporan()">
+</div>
                     <div class="grid grid-cols-2 gap-2">
                         <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
                         <div class="input-group"><label class="text-[10px]">TTD Koord</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
@@ -262,9 +272,11 @@
         const nip = document.getElementById('in_nip').value || "..........................";
         const pangkat = document.getElementById('in_pangkat').value || "..........................";
         const jabatan = document.getElementById('in_jabatan').value || "..........................";
+        const jabatanK = document.getElementById('in_jabatan_k').value || "..........................";
         const wilayah = document.getElementById('in_wilayah').value || "........";
         const namaK = document.getElementById('in_nama_k').value || "..........................";
         const nipK = document.getElementById('in_nip_k').value || "..........................";
+        
 
         for (let i = 1; i <= jumlahKegiatan; i++) {
             const materi = document.getElementById(`materi_${i}`)?.value || "..........................";
@@ -296,7 +308,7 @@
 
                     <div class="flex justify-between mt-24 px-10">
                         <div class="text-center w-[45%]">
-                            Mengetahui,<br>Koordinator BPP ${wilayah}
+                            Mengetahui,<br>${jabatanK} ${wilayah}
                             <div class="sig-box">${imgStore.ttd_k ? `<img src="${imgStore.ttd_k}" class="ttd-img">` : ''}</div>
                             <b class="underline uppercase">${namaK}</b><br>NIP. ${nipK}
                         </div>
