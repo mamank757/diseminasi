@@ -86,17 +86,17 @@
                     <div class="input-group"><label>Wilayah (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Bola"></div>
                     <hr class="border-gray-700">
                     <div class="input-group">
-    <label>Jabatan Penandatangan (Kiri)</label>
-    <input type="text" id="in_jabatan_k" oninput="updateLaporan()" placeholder="Koordinator BPP Bola">
-</div>
-<div class="input-group">
-    <label>Nama Penandatangan</label>
-    <input type="text" id="in_nama_k" oninput="updateLaporan()" placeholder="Samaila">
-</div>
-<div class="input-group">
-    <label>NIP/ID Penandatangan</label>
-    <input type="text" id="in_nip_k" oninput="updateLaporan()">
-</div>
+                        <label>Jabatan Penandatangan (Kiri)</label>
+                        <input type="text" id="in_jabatan_k" oninput="updateLaporan()" placeholder="Koordinator BPP Bola">
+                    </div>
+                    <div class="input-group">
+                        <label>Nama Penandatangan</label>
+                        <input type="text" id="in_nama_k" oninput="updateLaporan()" placeholder="Samaila">
+                    </div>
+                    <div class="input-group">
+                        <label>NIP/ID Penandatangan</label>
+                        <input type="text" id="in_nip_k" oninput="updateLaporan()">
+                    </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
                         <div class="input-group"><label class="text-[10px]">TTD Koord</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
@@ -104,8 +104,7 @@
                 </div>
             </div>
 
-            <div id="input-kegiatan-container" class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
-                </div>
+            <div id="input-kegiatan-container" class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6"></div>
         </div>
     </div>
 </div>
@@ -173,7 +172,7 @@
                     <div class="input-group"><label>Lokasi / Kelompok</label><input type="text" id="lok_${i}" oninput="updateLaporan()" value="${val.lok}"></div>
                     <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="peserta_${i}" oninput="updateLaporan()" value="${val.peserta}"></div>
                     <div class="input-group"><label>Tanggal</label><input type="date" id="tgl_${i}" onchange="updateLaporan()" value="${val.tgl}"></div>
-                    <textarea id="h_${i}" class="hidden">${val.hasil}</textarea>
+                    <textarea id="h_${i}" class="hidden" oninput="updateLaporan()">${val.hasil}</textarea>
                 </div>
             </div>`;
         }
@@ -221,43 +220,37 @@
         }
 
         btn.disabled = true; loader.classList.remove('hidden');
-        const key = "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";
+
+        // URL Web App Apps Script Anda
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbyzqMWMdfvuizGXe-8huIwDbPc1uHlVb9uJEMfT1-Uc93xEaji-WJbtJj9w91A1HZoO/exec"; 
+
+        const instruksiSistem = `Anda adalah asisten pembuat laporan pertanian profesional. Buatlah ${jumlahKegiatan} narasi laporan hasil kegiatan PPL. 
+        SYARAT: 
+        - Bahasa formal & profesional.
+        - Minimal 3 kalimat per narasi.
+        - Fokus pada penyebarluasan informasi ke petani.
+        - Pisahkan narasi HANYA dengan tanda '###'. 
+        - Berikan hasil narasi saja tanpa kalimat pembuka/penutup.`;
+
+        const promptUser = `Materi: ${promptMateri}`;
 
         try {
-            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${key}` 
-                },
-                body: JSON.stringify({ 
-                    model: "llama-3.3-70b-versatile", 
-                    messages: [
-                        { 
-                            role: "system", 
-                            content: "Anda adalah asisten pembuat laporan pertanian. Berikan hasil narasi LANGSUNG tanpa kalimat pembuka/penutup. Hanya teks narasi yang dipisahkan dengan ###." 
-                        },
-                        { 
-                            role: "user", 
-                            content: `Buat ${jumlahKegiatan} narasi hasil kegiatan PPL. Materi: ${promptMateri}. Syarat: Bahasa formal, minimal 3 kalimat per narasi, pisahkan HANYA dengan tanda '###' tanpa teks tambahan lain.` 
-                        }
-                    ]
-                })
-            });
-
+            const finalUrl = webAppUrl + "?prompt=" + encodeURIComponent(instruksiSistem + "\n\n" + promptUser);
+            const res = await fetch(finalUrl);
             const data = await res.json();
-            let aiResponse = data.choices[0].message.content;
+            
+            let aiResponse = data.candidates[0].content.parts[0].text;
             const parts = aiResponse.split('###');
 
             for(let i=1; i<=jumlahKegiatan; i++){
-                document.getElementById(`h_${i}`).value = parts[i-1]?.trim() || "Gagal generate narasi.";
+                document.getElementById(`h_${i}`).value = parts[i-1]?.trim() || "Gagal memproses narasi.";
             }
             
             updateLaporan();
-            alert(`✨ Berhasil! ${jumlahKegiatan} narasi telah dibuat.`);
+            alert(`✨ Berhasil! ${jumlahKegiatan} narasi telah dibuat oleh Gemini.`);
         } catch (e) { 
             console.error(e);
-            alert("AI tidak merespon karena pengguna banyak. Silakan coba lagi."); 
+            alert("Gagal terhubung ke API Gemini. Coba lagi atau cek Deployment Apps Script Anda."); 
         } finally {
             btn.disabled = false;
             loader.classList.add('hidden');
@@ -285,7 +278,7 @@
             const pes = document.getElementById(`peserta_${i}`)?.value || "..........................";
             const tglRaw = document.getElementById(`tgl_${i}`)?.value;
             const tgl = tglRaw ? new Date(tglRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
-            const hasil = document.getElementById(`h_${i}`)?.value || "(Klik tombol Generate AI)";
+            const hasil = document.getElementById(`h_${i}`)?.value || "(Klik tombol Generate AI untuk narasi)";
 
             container.innerHTML += `
                 <div class="report-page">
