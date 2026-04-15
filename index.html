@@ -41,33 +41,29 @@
 <body>
 <div id="browser-warning" class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/90 backdrop-blur-md no-print p-4">
     <div class="bg-slate-800 p-6 sm:p-8 rounded-3xl border border-emerald-500/50 max-w-md w-full max-h-[90vh] overflow-y-auto text-center shadow-2xl ring-1 ring-white/10 custom-scrollbar">
-        
        <h3 class="text-xl font-bold text-white mb-3">Informasi Penggunaan</h3>
         <div class="mb-4">
             <img src="https://github.com/mamank757/laporanbola/blob/d0a50483d98999dce2a925f3e93d627168c2e360/ChatGPT%20Image%2030%20Mar%202026,%2002.51.28.png?raw=true" 
                  alt="Panduan" 
                  class="w-full max-h-40 object-contain rounded-2xl border border-white/10 shadow-lg bg-slate-900">
         </div>
-
-        
-        
         <div class="text-slate-300 mb-8 text-sm leading-relaxed space-y-3">
             <p><b>Generating</b> laporan Diseminasi dari <b>Mamank.</b> Follow TikTok sy: <b>King Mamank</b>.</p>
             <p class="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/30 text-sm md:text-base text-emerald-50 text-left">
                 <i class="fa-solid fa-robot mr-2 text-emerald-400"></i> 
-                <b class="text-white"></b> Utk hasil cetak laporan yg optimal, gunakan <b>HP Android</b> atau <b>Laptop</b> dgn browser <b>Google Chrome.</b> Jika Generating AI</b> gagal krn trafik padat. Coba lagi beberapa saat, <b>jangan</b> <i>refresh</i> halaman.
+                Utk hasil cetak laporan yg optimal, gunakan <b>HP Android</b> atau <b>Laptop</b> dgn browser <b>Google Chrome.</b>
             </p>
         </div>
-
         <button onclick="closeWarning()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-2xl transition-all duration-300 active:scale-95 shadow-lg shadow-emerald-900/20">
             SAYA SUDAH MEMBACA DAN MENGERTI
         </button>
     </div>
 </div>
+
 <div class="no-print p-4 lg:p-8 max-w-[1600px] mx-auto">
     <div class="bg-[#181818] rounded-2xl p-6 shadow-2xl border-b-4 border-blue-600">
         <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-white"><i class="fa-solid fa-file-invoice-dt mr-3 text-blue-500"></i>FORM 51 PPL MILENIAL</h1>
+            <h1 class="text-2xl font-bold text-white"><i class="fa-solid fa-file-invoice-dt mr-3 text-blue-500"></i>FORM 51 DISEMINASI</h1>
             <div class="flex gap-3 mt-4 md:mt-0">
                 <button onclick="tambahKegiatan()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold transition">
                     <i class="fa-solid fa-plus mr-2"></i> TAMBAH FORM
@@ -109,11 +105,12 @@
                     <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
                     <div class="input-group"><label>Wilayah (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Bola"></div>
                     <hr class="border-gray-700">
-                    <div class="input-group"><label>Koordinator</label><input type="text" id="in_nama_k" oninput="updateLaporan()" placeholder="Samaila"></div>
-                    <div class="input-group"><label>NIP Koordinator</label><input type="text" id="in_nip_k" oninput="updateLaporan()"></div>
+                    <div class="input-group"><label>Nama Jabatan Penandatangan</label><input type="text" id="in_label_k" oninput="updateLaporan()" value="Koordinator BPP Bola"></div>
+                    <div class="input-group"><label>Nama Pejabat Penandatangan</label><input type="text" id="in_nama_k" oninput="updateLaporan()" placeholder="Samaila"></div>
+                    <div class="input-group"><label>NIP Pejabat Penandatangan</label><input type="text" id="in_nip_k" oninput="updateLaporan()"></div>
                     <div class="grid grid-cols-2 gap-2">
                         <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
-                        <div class="input-group"><label class="text-[10px]">TTD Koord</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
+                        <div class="input-group"><label class="text-[10px]">TTD Pejabat Penandatangan</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
                     </div>
                 </div>
             </div>
@@ -167,7 +164,7 @@
 
         let html = '';
         for(let i=1; i<=jumlahKegiatan; i++){
-            const val = currentValues[i] || {materi:'', metode:'Diskusi', lok:'', peserta:'15 Orang', tgl:'', hasil:''};
+            const val = currentValues[i] || {materi:'cth. Pengendalian Hama Penggerek Batang Padi', metode:'Diskusi', lok:'', peserta:'15 Orang', tgl:'', hasil:''};
             html += `
             <div class="section-box relative">
                 <button onclick="hapusKegiatan(${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 ${jumlahKegiatan === 1 ? 'hidden' : ''}">
@@ -290,6 +287,9 @@
         const pangkat = document.getElementById('in_pangkat').value || "..........................";
         const jabatan = document.getElementById('in_jabatan').value || "..........................";
         const wilayah = document.getElementById('in_wilayah').value || "........";
+        
+        // Ambil label jabatan koordinator dari input manual
+        const labelK = document.getElementById('in_label_k').value || "Koordinator";
         const namaK = document.getElementById('in_nama_k').value || "..........................";
         const nipK = document.getElementById('in_nip_k').value || "..........................";
 
@@ -308,7 +308,7 @@
                     <table>
                         <tr><td width="30" class="font-bold">1.</td><td colspan="2" class="font-bold">Penyuluh Pertanian</td></tr>
                         <tr><td></td><td width="180">a. Nama / NIP</td><td>: ${nama} / NIP. ${nip}</td></tr>
-                        <tr><td></td><td>b. Pangkat / Golongan</td><td>: ${pangkat}</td></tr>
+                        <tr><td></td><td>b. Pangkat / Gologan</td><td>: ${pangkat}</td></tr>
                         <tr><td></td><td>c. Jabatan</td><td>: ${jabatan}</td></tr>
                         <tr><td></td><td>d. Unit Kerja</td><td>: KEMENTERIAN PERTANIAN RI</td></tr>
                         <tr><td class="font-bold pt-4">2.</td><td class="font-bold pt-4">Dasar Pelaksanaan</td><td class="pt-4">: Indikator Kinerja Penyuluh Pertanian</td></tr>
@@ -323,7 +323,7 @@
 
                     <div class="flex justify-between mt-24 px-10">
                         <div class="text-center w-[45%]">
-                            Mengetahui,<br>Koordinator BPP ${wilayah}
+                            Mengetahui,<br>${labelK} ${wilayah}
                             <div class="sig-box">${imgStore.ttd_k ? `<img src="${imgStore.ttd_k}" class="ttd-img">` : ''}</div>
                             <b class="underline uppercase">${namaK}</b><br>NIP. ${nipK}
                         </div>
