@@ -7,6 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+    
+    /* Animasi putar untuk ikon loader */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin-custom {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+/* Efek berdenyut untuk tombol saat loading */
+.pulse-loading {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    opacity: 0.8;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+}
         @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
         * { box-sizing: border-box; }
         body { font-family: 'Times New Roman', Times, serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 0; }
@@ -69,9 +91,12 @@
                 <button onclick="tambahKegiatan()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold transition">
                     <i class="fa-solid fa-plus mr-2"></i> TAMBAH FORM
                 </button>
-                <button onclick="generateAI()" id="btn-ai" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-bold transition flex items-center">
-                    <span id="loader" class="hidden mr-2">🌀</span> ✨ GENERATE NARASI AI
-                </button>
+                <button onclick="generateAI()" id="btn-ai" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-bold transition flex items-center disabled:bg-purple-900 disabled:cursor-not-allowed">
+    <span id="loader" class="hidden mr-2">
+        <i class="fa-solid fa-circle-notch animate-spin-custom"></i>
+    </span> 
+    <span id="btn-text">✨ GENERATE NARASI AI</span>
+</button>
                 <button onclick="window.print()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg">
                     <i class="fa-solid fa-print mr-2"></i> CETAK
                 </button>
@@ -227,53 +252,64 @@
         updateLaporan();
     }
 
-    async function generateAI() {
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzG3xe7StqwkdZr0Ucyz5BEjTzhfv9b5eN19B7rFKhNWln3YShtRgOHSTK_KBPjA8rCIg/exec"; 
-        const btn = document.getElementById('btn-ai');
-        const loader = document.getElementById('loader');
-        let promptMateri = "";
-        
-        for(let i=1; i<=jumlahKegiatan; i++){
-            const m = document.getElementById(`materi_${i}`).value;
-            if(!m) return alert(`Isi materi kegiatan ${i} terlebih dahulu!`);
-            promptMateri += `Materi ${i}: ${m}, `;
-        }
-
-        btn.disabled = true; 
-        loader.classList.remove('hidden');
-
-        const promptUser = `Buatlah ${jumlahKegiatan} narasi hasil kegiatan penyuluhan pertanian (diseminasi). 
-        Materi yang dibahas: ${promptMateri}. 
-        Ketentuan: Bahasa formal, teknis pertanian, 2 kalimat panjang per narasi. 
-        PENTING: Pisahkan setiap narasi hanya dengan simbol '###' tanpa kata-kata lain.`;
-
-        try {
-            const res = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                body: JSON.stringify({ prompt: promptUser })
-            });
-
-            if (!res.ok) throw new Error("Gagal terhubung ke GAS");
-
-            const data = await res.json();
-            const aiResponse = data.choices[0].message.content;
-            const parts = aiResponse.split('###');
-
-            for(let i=1; i<=jumlahKegiatan; i++){
-                const content = parts[i-1]?.trim() || "Gagal generate narasi.";
-                document.getElementById(`h_${i}`).value = content;
-            }
-            
-            updateLaporan();
-            alert(`✅ Berhasil! ${jumlahKegiatan} narasi telah dibuat.`);
-        } catch (e) { 
-            console.error(e);
-            alert("Terjadi kesalahan. Pastikan Web App GAS sudah di-deploy 'Anyone' dan URL benar."); 
-        } finally {
-            btn.disabled = false;
-            loader.classList.add('hidden');
-        }
+   async function generateAI() {
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzG3xe7StqwkdZr0Ucyz5BEjTzhfv9b5eN19B7rFKhNWln3YShtRgOHSTK_KBPjA8rCIg/exec"; 
+    const btn = document.getElementById('btn-ai');
+    const loader = document.getElementById('loader');
+    const btnText = document.getElementById('btn-text');
+    let promptMateri = "";
+    
+    // 1. Validasi Input
+    for(let i=1; i<=jumlahKegiatan; i++){
+        const m = document.getElementById(`materi_${i}`).value;
+        if(!m) return alert(`Isi materi kegiatan ${i} terlebih dahulu!`);
+        promptMateri += `Materi ${i}: ${m}, `;
     }
+
+    // 2. Aktifkan State Loading
+    btn.disabled = true; 
+    loader.classList.remove('hidden');
+    btn.classList.add('pulse-loading'); 
+    btnText.innerText = "SEDANG MENYUSUN NARASI LAPORAN"; 
+
+    const promptUser = `Buatlah ${jumlahKegiatan} narasi hasil kegiatan penyuluhan pertanian (diseminasi). 
+    Materi yang dibahas: ${promptMateri}. 
+    Ketentuan: Bahasa formal, teknis pertanian, 2 kalimat panjang per narasi. 
+    PENTING: Pisahkan setiap narasi hanya dengan simbol '###' tanpa kata-kata lain.`;
+
+    try {
+        // 3. Proses Pengambilan Data
+        const res = await fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({ prompt: promptUser })
+        });
+
+        if (!res.ok) throw new Error("Gagal terhubung ke GAS");
+
+        const data = await res.json();
+        const aiResponse = data.choices[0].message.content;
+        const parts = aiResponse.split('###');
+
+        // 4. Masukkan Hasil ke Textarea masing-masing kegiatan
+        for(let i=1; i<=jumlahKegiatan; i++){
+            const content = parts[i-1]?.trim() || "Gagal generate narasi.";
+            document.getElementById(`h_${i}`).value = content;
+        }
+        
+        updateLaporan();
+        alert(`✅ Berhasil! ${jumlahKegiatan} narasi telah dibuat.`);
+
+    } catch (e) { 
+        console.error(e);
+        alert("Terjadi kesalahan. Pastikan Web App GAS sudah di-deploy 'Anyone' dan URL benar."); 
+    } finally {
+        // 5. Matikan State Loading (Kembali Normal)
+        btn.disabled = false;
+        loader.classList.add('hidden');
+        btn.classList.remove('pulse-loading'); 
+        btnText.innerText = "✨ GENERATE NARASI AI"; 
+    }
+}
 
     function updateLaporan() {
         const container = document.getElementById('report-container');
