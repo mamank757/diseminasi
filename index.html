@@ -39,6 +39,7 @@
     </style>
 </head>
 <body>
+
 <div id="browser-warning" class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/90 backdrop-blur-md no-print p-4">
     <div class="bg-slate-800 p-6 sm:p-8 rounded-3xl border border-emerald-500/50 max-w-md w-full max-h-[90vh] overflow-y-auto text-center shadow-2xl ring-1 ring-white/10 custom-scrollbar">
        <h3 class="text-xl font-bold text-white mb-3">Informasi Penggunaan</h3>
@@ -110,7 +111,7 @@
                     <div class="input-group"><label>NIP Pejabat Penandatangan</label><input type="text" id="in_nip_k" oninput="updateLaporan()"></div>
                     <div class="grid grid-cols-2 gap-2">
                         <div class="input-group"><label class="text-[10px]">TTD Penyuluh</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_p')"></div>
-                        <div class="input-group"><label class="text-[10px]">TTD Pejabat Penandatangan</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
+                        <div class="input-group"><label class="text-[10px]">TTD Pejabat</label><input type="file" accept="image/*" onchange="readImage(this, 'ttd_k')"></div>
                     </div>
                 </div>
             </div>
@@ -125,8 +126,9 @@
 
 <script>
     function closeWarning() {
-    document.getElementById('browser-warning').style.display = 'none';
-}
+        document.getElementById('browser-warning').style.display = 'none';
+    }
+
     let jumlahKegiatan = 1;
     const dataPenyuluh = {
         "ABDUL RAHMAN, SP": { nip: "199009202020121001" },
@@ -164,7 +166,7 @@
 
         let html = '';
         for(let i=1; i<=jumlahKegiatan; i++){
-            const val = currentValues[i] || {materi:'cth. Pengendalian Hama Penggerek Batang Padi', metode:'Diskusi', lok:'', peserta:'15 Orang', tgl:'', hasil:''};
+            const val = currentValues[i] || {materi:'', metode:'Diskusi', lok:'', peserta:'15 Orang', tgl:'', hasil:''};
             html += `
             <div class="section-box relative">
                 <button onclick="hapusKegiatan(${i})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 ${jumlahKegiatan === 1 ? 'hidden' : ''}">
@@ -172,7 +174,7 @@
                 </button>
                 <h3 class="text-orange-400 font-bold mb-4 flex items-center"><i class="fa-solid fa-file-lines mr-2"></i> KEGIATAN ${i}</h3>
                 <div class="space-y-3">
-                    <div class="input-group"><label>Materi</label><input type="text" id="materi_${i}" oninput="updateLaporan()" value="${val.materi}"></div>
+                    <div class="input-group"><label>Materi</label><input type="text" id="materi_${i}" oninput="updateLaporan()" value="${val.materi}" placeholder="Cth: Budidaya Jagung"></div>
                     <div class="input-group">
                         <label>Metode</label>
                         <select id="metode_${i}" onchange="updateLaporan()">
@@ -196,8 +198,10 @@
     }
 
     function tambahKegiatan() {
-        jumlahKegiatan++;
-        renderInputKegiatan();
+        if(jumlahKegiatan < 20) {
+            jumlahKegiatan++;
+            renderInputKegiatan();
+        }
     }
 
     function hapusKegiatan(index) {
@@ -224,6 +228,7 @@
     }
 
     async function generateAI() {
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyn453LvcUvarL_rfH_kBb43oIzjIDr6OnqE6Jts9Mp9BpqToOrS6X06p3nvjZuds1yRA/exec"; 
         const btn = document.getElementById('btn-ai');
         const loader = document.getElementById('loader');
         let promptMateri = "";
@@ -231,47 +236,39 @@
         for(let i=1; i<=jumlahKegiatan; i++){
             const m = document.getElementById(`materi_${i}`).value;
             if(!m) return alert(`Isi materi kegiatan ${i} terlebih dahulu!`);
-            promptMateri += `Narasi ${i}: ${m}, `;
+            promptMateri += `Materi ${i}: ${m}, `;
         }
 
-        btn.disabled = true; loader.classList.remove('hidden');
-        const key = "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";
+        btn.disabled = true; 
+        loader.classList.remove('hidden');
+
+        const promptUser = `Buatlah ${jumlahKegiatan} narasi hasil kegiatan penyuluhan pertanian (diseminasi). 
+        Materi yang dibahas: ${promptMateri}. 
+        Ketentuan: Bahasa formal, teknis pertanian, 2 kalimat panjang per narasi. 
+        PENTING: Pisahkan setiap narasi hanya dengan simbol '###' tanpa kata-kata lain.`;
 
         try {
-            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            const res = await fetch(WEB_APP_URL, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${key}` 
-                },
-                body: JSON.stringify({ 
-                    model: "llama-3.3-70b-versatile", 
-                    messages: [
-                        { 
-                            role: "system", 
-                            content: "Anda adalah asisten pembuat laporan pertanian. Berikan hasil narasi LANGSUNG tanpa kalimat pembuka/penutup. Hanya teks narasi yang dipisahkan dengan ###." 
-                        },
-                        { 
-                            role: "user", 
-                            content: `Buat ${jumlahKegiatan} narasi hasil kegiatan PPL. Materi: ${promptMateri}. Syarat: Bahasa formal, minimal 3 kalimat per narasi, pisahkan HANYA dengan tanda '###' tanpa teks tambahan lain.` 
-                        }
-                    ]
-                })
+                body: JSON.stringify({ prompt: promptUser })
             });
 
+            if (!res.ok) throw new Error("Gagal terhubung ke GAS");
+
             const data = await res.json();
-            let aiResponse = data.choices[0].message.content;
+            const aiResponse = data.choices[0].message.content;
             const parts = aiResponse.split('###');
 
             for(let i=1; i<=jumlahKegiatan; i++){
-                document.getElementById(`h_${i}`).value = parts[i-1]?.trim() || "Gagal generate narasi.";
+                const content = parts[i-1]?.trim() || "Gagal generate narasi.";
+                document.getElementById(`h_${i}`).value = content;
             }
             
             updateLaporan();
-            alert(`✨ Berhasil! ${jumlahKegiatan} narasi telah dibuat.`);
+            alert(`✅ Berhasil! ${jumlahKegiatan} narasi telah dibuat.`);
         } catch (e) { 
             console.error(e);
-            alert("AI tidak merespon karena pengguna banyak. Silakan coba lagi."); 
+            alert("Terjadi kesalahan. Pastikan Web App GAS sudah di-deploy 'Anyone' dan URL benar."); 
         } finally {
             btn.disabled = false;
             loader.classList.add('hidden');
@@ -288,7 +285,6 @@
         const jabatan = document.getElementById('in_jabatan').value || "..........................";
         const wilayah = document.getElementById('in_wilayah').value || "........";
         
-        // Ambil label jabatan koordinator dari input manual
         const labelK = document.getElementById('in_label_k').value || "Koordinator";
         const namaK = document.getElementById('in_nama_k').value || "..........................";
         const nipK = document.getElementById('in_nip_k').value || "..........................";
@@ -308,7 +304,7 @@
                     <table>
                         <tr><td width="30" class="font-bold">1.</td><td colspan="2" class="font-bold">Penyuluh Pertanian</td></tr>
                         <tr><td></td><td width="180">a. Nama / NIP</td><td>: ${nama} / NIP. ${nip}</td></tr>
-                        <tr><td></td><td>b. Pangkat / Gologan</td><td>: ${pangkat}</td></tr>
+                        <tr><td></td><td>b. Pangkat / Golongan</td><td>: ${pangkat}</td></tr>
                         <tr><td></td><td>c. Jabatan</td><td>: ${jabatan}</td></tr>
                         <tr><td></td><td>d. Unit Kerja</td><td>: KEMENTERIAN PERTANIAN RI</td></tr>
                         <tr><td class="font-bold pt-4">2.</td><td class="font-bold pt-4">Dasar Pelaksanaan</td><td class="pt-4">: Indikator Kinerja Penyuluh Pertanian</td></tr>
