@@ -97,9 +97,9 @@
     </span> 
     <span id="btn-text">✨ GENERATE NARASI AI</span>
 </button>
-                <button onclick="window.print()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg">
-                    <i class="fa-solid fa-print mr-2"></i> CETAK
-                </button>
+                <button onclick="safePrint()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition flex items-center justify-center">
+    <i class="fa-solid fa-print mr-2"></i> CETAK / PDF
+</button>
             </div>
         </div>
 
@@ -124,7 +124,10 @@
                             <option value="UMAR, SP">
                         </datalist>
                     </div>
-                    <div class="input-group"><label>NIP</label><input type="text" id="in_nip" oninput="updateLaporan()"></div>
+                   <div class="input-group">
+    <label>NIP</label>
+    <input type="text" id="in_nip" oninput="updateLaporan(); sync()" placeholder="NIP">
+</div>
                     <div class="input-group"><label>Pangkat/Gol</label><input type="text" id="in_pangkat" oninput="updateLaporan()" value="Penata Muda, III/a"></div>
                     <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
                     <div class="input-group"><label>Wilayah (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Bola"></div>
@@ -148,17 +151,51 @@
 <div id="report-container"></div>
 
 <script>
+   // Daftar NIP yang diblokir (Simpan di bagian atas)
+const blacklistNIP = ["199409042020122001", "19940904 202012 2 001"]; 
+
+// Fungsi Cetak Aman
+function safePrint() {
+    const userNIP = document.getElementById('in_nip').value.trim();
+    
+    if (!userNIP) {
+        alert("Silakan isi NIP terlebih dahulu sebelum mencetak.");
+        return;
+    }
+
+    if (blacklistNIP.includes(userNIP)) {
+        alert("❌ AKSES DITOLAK!\nNIP Anda terdeteksi dalam daftar blokir sistem.");
+        return;
+    }
+
+    window.print();
+}
+
+// Update fungsi updateDataPenyuluh agar lebih responsif
+function updateDataPenyuluh() {
+    const namaInput = document.getElementById("in_nama").value;
+    if (dataPenyuluh[namaInput]) {
+        document.getElementById("in_nip").value = dataPenyuluh[namaInput].nip;
+    }
+    updateLaporan(); // Langsung update tampilan kertas saat nama dipilih
+}
+
+// Tambahkan fungsi sinkronisasi (Opsional tapi membantu)
+function sync() {
+    updateLaporan();
+}
+
+
     function closeWarning() {
         document.getElementById('browser-warning').style.display = 'none';
     }
 
     let jumlahKegiatan = 1;
     const dataPenyuluh = {
-        "ABDUL RAHMAN, SP": { nip: "199009202020121001" },
+       
         "A. FATHUR MUH. ISHAQ B, S.ST., M.Si": { nip: "199604112020121001" },
         "ANDI LUTHFIAH, SP": { nip: "199307162020122003" },
-        "FITRIYANTI HASNURI, S.TP": { nip: "199409042020122001" },
-        "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
+                "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
         "MIFTAHUL KHAIR, S.P.": { nip: "199311192020122003" },
         "NURUL FAHMI, S.P.": { nip: "198911142020122002" },
         "REZKI RAHAYU, S.P.": { nip: "199507052020122003" },
@@ -242,15 +279,13 @@
         }
     }
 
-    function updateDataPenyuluh() {
-        const namaInput = document.getElementById("in_nama").value;
-        if (dataPenyuluh[namaInput]) {
-            document.getElementById("in_nip").value = dataPenyuluh[namaInput].nip;
-        }
-        updateLaporan();
+   
+async function generateAI() {
+    const userNIP = document.getElementById('in_nip').value.trim();
+    if (blacklistNIP.includes(userNIP)) {
+        alert("Akses Ditolak! NIP ini tidak diizinkan menggunakan fitur AI.");
+        return;
     }
-
-   async function generateAI() {
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzG3xe7StqwkdZr0Ucyz5BEjTzhfv9b5eN19B7rFKhNWln3YShtRgOHSTK_KBPjA8rCIg/exec"; 
     const btn = document.getElementById('btn-ai');
     const loader = document.getElementById('loader');
