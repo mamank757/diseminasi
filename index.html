@@ -41,16 +41,60 @@
         }
         .report-page table { border-spacing: 0; border-collapse: collapse; width: 100%; color: black; }
         .report-page td { padding-top: 2px; padding-bottom: 2px; vertical-align: top; }
+        .text-justify {
+    text-align: justify;
+    line-height: 1.6;
+    page-break-inside: auto; 
+    display: block; /* Memastikan elemen dianggap sebagai blok yang bisa diputus */
+}
 
         .sig-box { position: relative; height: 90px; width: 100%; display: flex; align-items: center; justify-content: center; }
         .ttd-img { max-height: 90px; max-width: 160px; object-fit: contain; pointer-events: none; }
+        
+/* Update Wadah Foto Kegiatan */
+.photo-container { 
+    width: 100%; 
+    margin: 20px 0; 
+    display: flex;       /* Tambahkan ini */
+    justify-content: center; /* Agar konten di dalamnya center secara horizontal */
+    align-items: center;     /* Agar konten di dalamnya center secara vertikal jika ada tinggi sisa */
+    border: 1px solid #eee; 
+    padding: 10px; 
+}
 
-        @media print {
-            @page { size: A4; margin: 0; }
-            body { background: white !important; }
-            .no-print { display: none !important; }
-            .report-page { margin: 0 !important; box-shadow: none !important; border: none; }
-        }
+.photo-img { 
+    display: block;      /* Memastikan image berperilaku seperti block */
+    margin-left: auto;   /* Center manual tambahan */
+    margin-right: auto;  /* Center manual tambahan */
+    max-width: 100%; 
+    max-height: 200px; 
+    object-fit: contain; 
+}
+
+/* Penanganan Auto-Break */
+@media print {
+    @page { 
+        size: A4; 
+        margin: 20mm; /* Menentukan margin halaman cetak secara global */
+    }
+    body { background: white !important; }
+    .no-print { display: none !important; }
+    
+    .report-page { 
+        margin: 0 !important; 
+        padding: 0 !important; /* Gunakan margin dari @page agar konsisten */
+        box-shadow: none !important; 
+        border: none;
+        width: 100%;
+        page-break-after: always; 
+        overflow: visible !important; /* Pastikan teks yang meluap tidak terpotong */
+    }
+    
+    /* Mencegah tabel terpotong di tengah baris */
+    table, tr, td {
+        page-break-inside: avoid;
+    }
+}
 
         .input-group label { display: block; font-size: 0.7rem; font-weight: bold; color: #3b82f6; margin-bottom: 2px; text-transform: uppercase; }
         .input-group input, .input-group select, .input-group textarea { 
@@ -77,9 +121,11 @@
                 Utk hasil cetak laporan yg optimal, gunakan <b>HP Android</b> atau <b>Laptop</b> dgn browser <b>Google Chrome.</b>
             </p>
         </div>
-        <button onclick="closeWarning()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-2xl transition-all duration-300 active:scale-95 shadow-lg shadow-emerald-900/20">
-            SAYA SUDAH MEMBACA DAN MENGERTI
-        </button>
+        <button type="button" 
+        onclick="closeWarning()" 
+        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-2xl transition-all duration-300 active:scale-95 shadow-lg shadow-emerald-900/20 cursor-pointer">
+    SAYA SUDAH MEMBACA DAN MENGERTI
+</button>
     </div>
 </div>
 
@@ -132,7 +178,7 @@
                     <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
                     <div class="input-group"><label>Wilayah (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Bola"></div>
                     <hr class="border-gray-700">
-                    <div class="input-group"><label>Nama Jabatan Penandatangan</label><input type="text" id="in_label_k" oninput="updateLaporan()" value="Koordinator BPP Bola"></div>
+                    <div class="input-group"><label>Nama Jabatan Penandatangan</label><input type="text" id="in_label_k" oninput="updateLaporan()" value="Koordinator BPP"></div>
                     <div class="input-group"><label>Nama Pejabat Penandatangan</label><input type="text" id="in_nama_k" oninput="updateLaporan()" placeholder="Samaila"></div>
                     <div class="input-group"><label>NIP Pejabat Penandatangan</label><input type="text" id="in_nip_k" oninput="updateLaporan()"></div>
                     <div class="grid grid-cols-2 gap-2">
@@ -151,51 +197,15 @@
 <div id="report-container"></div>
 
 <script>
-   // Daftar NIP yang diblokir (Simpan di bagian atas)
-const blacklistNIP = ["199409042020122001", "19940904 202012 2 001"]; 
-
-// Fungsi Cetak Aman
-function safePrint() {
-    const userNIP = document.getElementById('in_nip').value.trim();
-    
-    if (!userNIP) {
-        alert("Silakan isi NIP terlebih dahulu sebelum mencetak.");
-        return;
-    }
-
-    if (blacklistNIP.includes(userNIP)) {
-        alert("❌ AKSES DITOLAK!");
-        return;
-    }
-
-    window.print();
-}
-
-// Update fungsi updateDataPenyuluh agar lebih responsif
-function updateDataPenyuluh() {
-    const namaInput = document.getElementById("in_nama").value;
-    if (dataPenyuluh[namaInput]) {
-        document.getElementById("in_nip").value = dataPenyuluh[namaInput].nip;
-    }
-    updateLaporan(); // Langsung update tampilan kertas saat nama dipilih
-}
-
-// Tambahkan fungsi sinkronisasi (Opsional tapi membantu)
-function sync() {
-    updateLaporan();
-}
-
-
-    function closeWarning() {
-        document.getElementById('browser-warning').style.display = 'none';
-    }
-
+    // 1. Inisialisasi Data & Variabel Global
+    const blacklistNIP = ["199409042020122001", "19940904 202012 2 001"];
     let jumlahKegiatan = 1;
+    let imgStore = { ttd_p: "", ttd_k: "" };
+    
     const dataPenyuluh = {
-       
         "A. FATHUR MUH. ISHAQ B, S.ST., M.Si": { nip: "199604112020121001" },
         "ANDI LUTHFIAH, SP": { nip: "199307162020122003" },
-                "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
+        "INDRA YULIANA, S.TP., M.Si.": { nip: "199307062020122001" },
         "MIFTAHUL KHAIR, S.P.": { nip: "199311192020122003" },
         "NURUL FAHMI, S.P.": { nip: "198911142020122002" },
         "REZKI RAHAYU, S.P.": { nip: "199507052020122003" },
@@ -206,8 +216,46 @@ function sync() {
         "UMAR, SP": { nip: "199408272020121001" }
     };
 
-    let imgStore = { ttd_p: "", ttd_k: "" };
+    // 2. Fungsi Utama Window Onload (Gabungan)
+    window.onload = function() {
+        renderInputKegiatan();
+        console.log("Aplikasi Diseminasi Siap - King Mamank");
+    };
 
+    // 3. Fungsi Kendali UI
+    function closeWarning() {
+        const warningDiv = document.getElementById('browser-warning');
+        if (warningDiv) {
+            warningDiv.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    function safePrint() {
+        const userNIP = document.getElementById('in_nip').value.trim();
+        if (!userNIP) {
+            alert("Silakan isi NIP terlebih dahulu sebelum mencetak.");
+            return;
+        }
+        if (blacklistNIP.includes(userNIP)) {
+            alert("❌ AKSES DITOLAK!");
+            return;
+        }
+        window.print();
+    }
+
+    function updateDataPenyuluh() {
+        const namaInput = document.getElementById("in_nama").value;
+        const data = dataPenyuluh[namaInput];
+        if (data) {
+            document.getElementById("in_nip").value = data.nip;
+            if(data.pangkat) document.getElementById("in_pangkat").value = data.pangkat;
+            if(data.jabatan) document.getElementById("in_jabatan").value = data.jabatan;
+        }
+        updateLaporan();
+    }
+
+    // 4. Fungsi Form Kegiatan
     function renderInputKegiatan() {
         const container = document.getElementById('input-kegiatan-container');
         let currentValues = [];
@@ -249,6 +297,10 @@ function sync() {
                     <div class="input-group"><label>Lokasi / Kelompok</label><input type="text" id="lok_${i}" oninput="updateLaporan()" value="${val.lok}"></div>
                     <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="peserta_${i}" oninput="updateLaporan()" value="${val.peserta}"></div>
                     <div class="input-group"><label>Tanggal</label><input type="date" id="tgl_${i}" onchange="updateLaporan()" value="${val.tgl}"></div>
+                    <div class="input-group">
+                        <label class="text-yellow-400">Foto Kegiatan (Wajib)</label>
+                        <input type="file" accept="image/*" onchange="readImage(this, 'foto_${i}')">
+                    </div>
                     <textarea id="h_${i}" class="hidden">${val.hasil}</textarea>
                 </div>
             </div>`;
@@ -279,71 +331,58 @@ function sync() {
         }
     }
 
-   
-async function generateAI() {
-    const userNIP = document.getElementById('in_nip').value.trim();
-    if (blacklistNIP.includes(userNIP)) {
-        alert("Akses Ditolak! NIP ini tidak diizinkan menggunakan fitur AI.");
-        return;
-    }
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzG3xe7StqwkdZr0Ucyz5BEjTzhfv9b5eN19B7rFKhNWln3YShtRgOHSTK_KBPjA8rCIg/exec"; 
-    const btn = document.getElementById('btn-ai');
-    const loader = document.getElementById('loader');
-    const btnText = document.getElementById('btn-text');
-    let promptMateri = "";
-    
-    // 1. Validasi Input
-    for(let i=1; i<=jumlahKegiatan; i++){
-        const m = document.getElementById(`materi_${i}`).value;
-        if(!m) return alert(`Isi materi kegiatan ${i} terlebih dahulu!`);
-        promptMateri += `Materi ${i}: ${m}, `;
-    }
-
-    // 2. Aktifkan State Loading
-    btn.disabled = true; 
-    loader.classList.remove('hidden');
-    btn.classList.add('pulse-loading'); 
-    btnText.innerText = "SEDANG MENYUSUN NARASI LAPORAN"; 
-
-    const promptUser = `Buatlah ${jumlahKegiatan} narasi hasil kegiatan penyuluhan pertanian (diseminasi). 
-    Materi yang dibahas: ${promptMateri}. 
-    Ketentuan: Bahasa formal, teknis pertanian, 2 kalimat panjang per narasi. 
-    PENTING: Pisahkan setiap narasi hanya dengan simbol '###' tanpa kata-kata lain.`;
-
-    try {
-        // 3. Proses Pengambilan Data
-        const res = await fetch(WEB_APP_URL, {
-            method: 'POST',
-            body: JSON.stringify({ prompt: promptUser })
-        });
-
-        if (!res.ok) throw new Error("Gagal terhubung ke GAS");
-
-        const data = await res.json();
-        const aiResponse = data.choices[0].message.content;
-        const parts = aiResponse.split('###');
-
-        // 4. Masukkan Hasil ke Textarea masing-masing kegiatan
-        for(let i=1; i<=jumlahKegiatan; i++){
-            const content = parts[i-1]?.trim() || "Gagal generate narasi.";
-            document.getElementById(`h_${i}`).value = content;
+    // 5. Fungsi AI
+    async function generateAI() {
+        const userNIP = document.getElementById('in_nip').value.trim();
+        if (blacklistNIP.includes(userNIP)) {
+            alert("Akses Ditolak! NIP ini tidak diizinkan menggunakan fitur AI.");
+            return;
         }
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzG3xe7StqwkdZr0Ucyz5BEjTzhfv9b5eN19B7rFKhNWln3YShtRgOHSTK_KBPjA8rCIg/exec"; 
+        const btn = document.getElementById('btn-ai');
+        const loader = document.getElementById('loader');
+        const btnText = document.getElementById('btn-text');
+        let promptMateri = "";
         
-        updateLaporan();
-        alert(`✅ Berhasil! ${jumlahKegiatan} narasi telah dibuat.`);
+        for(let i=1; i<=jumlahKegiatan; i++){
+            const m = document.getElementById(`materi_${i}`).value;
+            if(!m) return alert(`Isi materi kegiatan ${i} terlebih dahulu!`);
+            promptMateri += `Materi ${i}: ${m}, `;
+        }
 
-    } catch (e) { 
-        console.error(e);
-        alert("Terjadi kesalahan. Pastikan Web App GAS sudah di-deploy 'Anyone' dan URL benar."); 
-    } finally {
-        // 5. Matikan State Loading (Kembali Normal)
-        btn.disabled = false;
-        loader.classList.add('hidden');
-        btn.classList.remove('pulse-loading'); 
-        btnText.innerText = "✨ GENERATE NARASI AI"; 
+        btn.disabled = true; 
+        loader.classList.remove('hidden');
+        btn.classList.add('pulse-loading'); 
+        btnText.innerText = "SEDANG MENYUSUN NARASI..."; 
+
+        const promptUser = `Buatlah ${jumlahKegiatan} narasi hasil kegiatan penyuluhan pertanian. Materi: ${promptMateri}. Formal, teknis, 2 kalimat panjang per narasi. Pisahkan dengan '###'.`;
+
+        try {
+            const res = await fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify({ prompt: promptUser })
+            });
+            const data = await res.json();
+            const aiResponse = data.choices[0].message.content;
+            const parts = aiResponse.split('###');
+
+            for(let i=1; i<=jumlahKegiatan; i++){
+                document.getElementById(`h_${i}`).value = parts[i-1]?.trim() || "Gagal generate.";
+            }
+            updateLaporan();
+            alert("✅ Berhasil menyusun narasi.");
+        } catch (e) { 
+            console.error(e);
+            alert("Terjadi kesalahan koneksi AI."); 
+        } finally {
+            btn.disabled = false;
+            loader.classList.add('hidden');
+            btn.classList.remove('pulse-loading'); 
+            btnText.innerText = "✨ GENERATE NARASI AI"; 
+        }
     }
-}
 
+    // 6. Fungsi Update Tampilan Laporan
     function updateLaporan() {
         const container = document.getElementById('report-container');
         container.innerHTML = "";
@@ -366,6 +405,7 @@ async function generateAI() {
             const tglRaw = document.getElementById(`tgl_${i}`)?.value;
             const tgl = tglRaw ? new Date(tglRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
             const hasil = document.getElementById(`h_${i}`)?.value || "(Klik tombol Generate AI)";
+            const fotoKegiatan = imgStore[`foto_${i}`];
 
             container.innerHTML += `
                 <div class="report-page">
@@ -385,8 +425,10 @@ async function generateAI() {
                         <tr><td></td><td>d. Peserta</td><td>: ${pes}</td></tr>
                         <tr><td class="font-bold pt-6">5.</td><td class="font-bold pt-6">Hasil Kegiatan</td><td class="pt-6 text-justify leading-relaxed">${hasil}</td></tr>
                     </table>
-
-                    <div class="flex justify-between mt-24 px-10">
+                   <div class="photo-container">
+    ${fotoKegiatan ? `<img src="${fotoKegiatan}" class="photo-img">` : '<div class="h-20 flex items-center justify-center border-dashed border-2 border-gray-300 text-gray-400 text-sm">Foto belum diunggah</div>'}
+</div>
+                    <div class="flex justify-between mt-10 px-10">
                         <div class="text-center w-[45%]">
                             Mengetahui,<br>${labelK} ${wilayah}
                             <div class="sig-box">${imgStore.ttd_k ? `<img src="${imgStore.ttd_k}" class="ttd-img">` : ''}</div>
@@ -401,8 +443,6 @@ async function generateAI() {
                 </div>`;
         }
     }
-
-    window.onload = renderInputKegiatan;
 </script>
 </body>
 </html>
