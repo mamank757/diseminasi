@@ -51,7 +51,7 @@
         .sig-box { position: relative; height: 90px; width: 100%; display: flex; align-items: center; justify-content: center; }
         .ttd-img { max-height: 90px; max-width: 160px; object-fit: contain; pointer-events: none; }
         
-/* Update Wadah Foto Kegiatan */
+       /* Update Wadah Foto Kegiatan */
 .photo-container { 
     width: 100%; 
     margin: 20px 0; 
@@ -71,28 +71,48 @@
     object-fit: contain; 
 }
 
-/* Penanganan Auto-Break */
+/* --- Tambahkan ini di bagian CSS umum (di atas @media print) --- */
+.signature-wrapper {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block;
+    width: 100%;
+}
+
+/* --- Gabungkan/Ganti @media print Anda dengan ini --- */
 @media print {
     @page { 
         size: A4; 
-        margin: 20mm; /* Menentukan margin halaman cetak secara global */
+        margin: 20mm; 
     }
     body { background: white !important; }
     .no-print { display: none !important; }
     
+    #report-container {
+        display: block;
+    }
+
     .report-page { 
         margin: 0 !important; 
-        padding: 0 !important; /* Gunakan margin dari @page agar konsisten */
+        padding: 0 !important; 
         box-shadow: none !important; 
         border: none;
         width: 100%;
         page-break-after: always; 
-        overflow: visible !important; /* Pastikan teks yang meluap tidak terpotong */
+        page-break-inside: auto; /* Biarkan teks panjang terputus ke hal berikutnya */
+        overflow: visible !important; 
     }
     
     /* Mencegah tabel terpotong di tengah baris */
     table, tr, td {
         page-break-inside: avoid;
+    }
+
+    /* KUNCI UTAMA: Memaksa tanda tangan tetap satu kesatuan */
+    .signature-wrapper {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        margin-top: 20px; /* Jarak aman sebelum tanda tangan */
     }
 }
 
@@ -407,6 +427,7 @@
             const hasil = document.getElementById(`h_${i}`)?.value || "(Klik tombol Generate AI)";
             const fotoKegiatan = imgStore[`foto_${i}`];
 
+            // Render halaman laporan
             container.innerHTML += `
                 <div class="report-page">
                     <div class="text-center font-bold text-lg mb-8 uppercase underline">LAPORAN KEGIATAN DISEMINASI INFORMASI PERTANIAN</div>
@@ -425,19 +446,23 @@
                         <tr><td></td><td>d. Peserta</td><td>: ${pes}</td></tr>
                         <tr><td class="font-bold pt-6">5.</td><td class="font-bold pt-6">Hasil Kegiatan</td><td class="pt-6 text-justify leading-relaxed">${hasil}</td></tr>
                     </table>
-                   <div class="photo-container">
-    ${fotoKegiatan ? `<img src="${fotoKegiatan}" class="photo-img">` : '<div class="h-20 flex items-center justify-center border-dashed border-2 border-gray-300 text-gray-400 text-sm">Foto belum diunggah</div>'}
-</div>
-                    <div class="flex justify-between mt-10 px-10">
-                        <div class="text-center w-[45%]">
-                            Mengetahui,<br>${labelK} ${wilayah}
-                            <div class="sig-box">${imgStore.ttd_k ? `<img src="${imgStore.ttd_k}" class="ttd-img">` : ''}</div>
-                            <b class="underline uppercase">${namaK}</b><br>NIP. ${nipK}
-                        </div>
-                        <div class="text-center w-[45%]">
-                            ${wilayah}, ${tgl}<br>Penyuluh Pertanian
-                            <div class="sig-box">${imgStore.ttd_p ? `<img src="${imgStore.ttd_p}" class="ttd-img">` : ''}</div>
-                            <b class="underline uppercase">${nama}</b><br>NIP. ${nip}
+
+                    <div class="photo-container">
+                        ${fotoKegiatan ? `<img src="${fotoKegiatan}" class="photo-img">` : '<div class="h-20 flex items-center justify-center border-dashed border-2 border-gray-300 text-gray-400 text-sm">Foto belum diunggah</div>'}
+                    </div>
+
+                    <div class="signature-wrapper">
+                        <div class="flex justify-between mt-10 px-10">
+                            <div class="text-center w-[45%]">
+                                Mengetahui,<br>${labelK} ${wilayah}
+                                <div class="sig-box">${imgStore.ttd_k ? `<img src="${imgStore.ttd_k}" class="ttd-img">` : ''}</div>
+                                <b class="underline uppercase">${namaK}</b><br>NIP. ${nipK}
+                            </div>
+                            <div class="text-center w-[45%]">
+                                ${wilayah}, ${tgl}<br>Penyuluh Pertanian
+                                <div class="sig-box">${imgStore.ttd_p ? `<img src="${imgStore.ttd_p}" class="ttd-img">` : ''}</div>
+                                <b class="underline uppercase">${nama}</b><br>NIP. ${nip}
+                            </div>
                         </div>
                     </div>
                 </div>`;
