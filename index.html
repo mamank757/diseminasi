@@ -194,8 +194,35 @@
     <label>NIP</label>
     <input type="text" id="in_nip" oninput="updateLaporan(); sync()" placeholder="NIP">
 </div>
-                    <div class="input-group"><label>Pangkat/Gol</label><input type="text" id="in_pangkat" oninput="updateLaporan()" value="Penata Muda, III/a"></div>
-                    <div class="input-group"><label>Jabatan</label><input type="text" id="in_jabatan" oninput="updateLaporan()" value="Penyuluh Pertanian Ahli Pertama"></div>
+                    <div class="input-group"><label>Pangkat/Gol</label>
+<select id="in_pangkat" onchange="updateLaporan()">
+    <option value="">-- Pilih Pangkat --</option>
+    <option value="Pengatur Muda (II/a)">Pengatur Muda (II/a)</option>
+    <option value="Pengatur Muda Tk. I (II/b)">Pengatur Muda Tk. I (II/b)</option>
+    <option value="Pengatur (II/c)">Pengatur (II/c)</option>
+    <option value="Pengatur Tk. I (II/d)">Pengatur Tk. I (II/d)</option>
+    <option value="Penata Muda, III/a" selected>Penata Muda, III/a</option>
+    <option value="Penata Muda Tk. I, III/b">Penata Muda Tk. I, III/b</option>
+    <option value="Penata, III/c">Penata, III/c</option>
+    <option value="Penata Tk. I, III/d">Penata Tk. I, III/d</option>
+    <option value="Pembina (IV/a)">Pembina (IV/a)</option>
+    <option value="Pembina Tk. I (IV/b)">Pembina Tk. I (IV/b)</option>
+    <option value="Pembina Utama Muda (IV/c)">Pembina Utama Muda (IV/c)</option>
+    <option value="Pembina Utama Madya (IV/d)">Pembina Utama Madya (IV/d)</option>
+    <option value="Pembina Utama (IV/e)">Pembina Utama (IV/e)</option>
+</select></div>
+                    <div class="input-group"><label>Jabatan</label>
+<select id="in_jabatan" onchange="updateLaporan()">
+    <option value="">-- Pilih Jabatan --</option>
+    <option value="Penyuluh Pertanian Pemula">Penyuluh Pertanian Pemula</option>
+    <option value="Penyuluh Pertanian Terampil">Penyuluh Pertanian Terampil</option>
+    <option value="Penyuluh Pertanian Mahir">Penyuluh Pertanian Mahir</option>
+    <option value="Penyuluh Pertanian Penyelia">Penyuluh Pertanian Penyelia</option>
+    <option value="Penyuluh Pertanian Ahli Pertama" selected>Penyuluh Pertanian Ahli Pertama</option>
+    <option value="Penyuluh Pertanian Ahli Muda">Penyuluh Pertanian Ahli Muda</option>
+    <option value="Penyuluh Pertanian Ahli Madya">Penyuluh Pertanian Ahli Madya</option>
+    <option value="Penyuluh Pertanian Ahli Utama">Penyuluh Pertanian Ahli Utama</option>
+</select></div>
                     <div class="input-group"><label>Wilayah (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Bola"></div>
                     <hr class="border-gray-700">
                     <div class="input-group"><label>Nama Jabatan Penandatangan</label><input type="text" id="in_label_k" oninput="updateLaporan()" value="Koordinator BPP"></div>
