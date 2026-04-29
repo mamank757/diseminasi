@@ -285,7 +285,7 @@
             return;
         }
         if (blacklistNIP.includes(userNIP)) {
-            alert("❌ AKSES DITOLAK!");
+            alert("❌ AKSES ANDA DITOLAK!");
             return;
         }
         window.print();
@@ -382,7 +382,7 @@
     async function generateAI() {
         const userNIP = document.getElementById('in_nip').value.trim();
         if (blacklistNIP.includes(userNIP)) {
-            alert("Akses Ditolak! NIP ini tidak diizinkan menggunakan fitur AI.");
+            alert("Akses Ditolak! Anda tidak diizinkan oleh Admin.");
             return;
         }
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzG3xe7StqwkdZr0Ucyz5BEjTzhfv9b5eN19B7rFKhNWln3YShtRgOHSTK_KBPjA8rCIg/exec"; 
@@ -420,7 +420,7 @@
             alert("✅ Berhasil menyusun narasi.");
         } catch (e) { 
             console.error(e);
-            alert("Terjadi kesalahan koneksi AI."); 
+            alert("Gagal Generate AI karena trafik padat/kode salah. Coba lagi nanti atau Hubungi Admin."); 
         } finally {
             btn.disabled = false;
             loader.classList.add('hidden');
