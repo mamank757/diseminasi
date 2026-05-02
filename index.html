@@ -139,7 +139,7 @@
             <p class="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/30 text-sm md:text-base text-emerald-50 text-left">Follow TikTok Sy: <b>King Mamank</b>.
                 <i class="fa-solid fa-robot mr-2 text-emerald-400"></i> 
                 <b class="text-white"></b>Gunakan <b>Google Chrome.</b>
-           Ada masalah, lapor: 081354871000 </p>
+            Ada masalah, lapor: 081354871000 </p>
         </div>
         <button type="button" 
         onclick="closeWarning()" 
@@ -192,7 +192,7 @@
                     </div>
                    <div class="input-group">
     <label>NIP</label>
-    <input type="text" id="in_nip" oninput="updateLaporan(); sync()" placeholder="NIP">
+    <input type="text" id="in_nip" oninput="updateLaporan()" placeholder="NIP">
 </div>
                     <div class="input-group"><label>Pangkat/Gol</label>
 <select id="in_pangkat" onchange="updateLaporan()">
@@ -225,6 +225,7 @@
     <option value="Penyuluh Pertanian Ahli Utama">Penyuluh Pertanian Ahli Utama</option>
 </select></div>
                     <div class="input-group"><label>Wilayah (Kecamatan)</label><input type="text" id="in_wilayah" oninput="updateLaporan()" placeholder="Bola"></div>
+                    <div class="input-group"><label class="text-orange-400">Tanggal Pengesahan TTD</label><input type="date" id="in_tgl_ttd" onchange="updateLaporan()"></div>
                     <hr class="border-gray-700">
                     <div class="input-group"><label>Nama Jabatan Penandatangan</label><input type="text" id="in_label_k" oninput="updateLaporan()" value="Koordinator BPP"></div>
                     <div class="input-group"><label>Nama Pejabat Penandatangan</label><input type="text" id="in_nama_k" oninput="updateLaporan()" placeholder="Samaila"></div>
@@ -264,10 +265,9 @@
         "UMAR, SP": { nip: "199408272020121001" }
     };
 
-    // 2. Fungsi Utama Window Onload (Gabungan)
+    // 2. Fungsi Utama Window Onload
     window.onload = function() {
         renderInputKegiatan();
-        console.log("Aplikasi Diseminasi Siap - King Mamank");
     };
 
     // 3. Fungsi Kendali UI
@@ -344,7 +344,7 @@
                     </div>
                     <div class="input-group"><label>Lokasi / Kelompok</label><input type="text" id="lok_${i}" oninput="updateLaporan()" value="${val.lok}"></div>
                     <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="peserta_${i}" oninput="updateLaporan()" value="${val.peserta}"></div>
-                    <div class="input-group"><label>Tanggal</label><input type="date" id="tgl_${i}" onchange="updateLaporan()" value="${val.tgl}"></div>
+                    <div class="input-group"><label>Tanggal Kegiatan</label><input type="date" id="tgl_${i}" onchange="updateLaporan()" value="${val.tgl}"></div>
                     <div class="input-group">
                         <label class="text-yellow-400">Foto Kegiatan (Wajib)</label>
                         <input type="file" accept="image/*" onchange="readImage(this, 'foto_${i}')">
@@ -379,7 +379,6 @@
         }
     }
 
-    // 5. Fungsi AI
     async function generateAI() {
         const userNIP = document.getElementById('in_nip').value.trim();
         if (blacklistNIP.includes(userNIP)) {
@@ -421,7 +420,7 @@
             alert("✅ Berhasil menyusun narasi.");
         } catch (e) { 
             console.error(e);
-            alert("Gagal Generate AI karena trafik padat/kode salah. Coba lagi nanti atau Hubungi Admin."); 
+            alert("Gagal Generate AI. Coba lagi nanti."); 
         } finally {
             btn.disabled = false;
             loader.classList.add('hidden');
@@ -441,6 +440,10 @@
         const jabatan = document.getElementById('in_jabatan').value || "..........................";
         const wilayah = document.getElementById('in_wilayah').value || "........";
         
+        // Ambil Tanggal Pengesahan
+        const tglTTDRaw = document.getElementById('in_tgl_ttd').value;
+        const tglTTD = tglTTDRaw ? new Date(tglTTDRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
+
         const labelK = document.getElementById('in_label_k').value || "Koordinator";
         const namaK = document.getElementById('in_nama_k').value || "..........................";
         const nipK = document.getElementById('in_nip_k').value || "..........................";
@@ -450,12 +453,14 @@
             const metode = document.getElementById(`metode_${i}`)?.value || "..........................";
             const lok = document.getElementById(`lok_${i}`)?.value || "..........................";
             const pes = document.getElementById(`peserta_${i}`)?.value || "..........................";
+            
+            // Tanggal Kegiatan
             const tglRaw = document.getElementById(`tgl_${i}`)?.value;
-            const tgl = tglRaw ? new Date(tglRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
+            const tglKegiatan = tglRaw ? new Date(tglRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
+            
             const hasil = document.getElementById(`h_${i}`)?.value || "(Klik tombol Generate AI)";
             const fotoKegiatan = imgStore[`foto_${i}`];
 
-            // Render halaman laporan
             container.innerHTML += `
                 <div class="report-page">
                     <div class="text-center font-bold text-lg mb-8 uppercase underline">LAPORAN KEGIATAN DISEMINASI INFORMASI PERTANIAN</div>
@@ -468,7 +473,7 @@
                         <tr><td class="font-bold pt-4">2.</td><td class="font-bold pt-4">Dasar Pelaksanaan</td><td class="pt-4">: Indikator Kinerja Penyuluh Pertanian</td></tr>
                         <tr><td class="font-bold pt-2">3.</td><td class="font-bold pt-2">Materi Diseminasi</td><td class="pt-2">: <b>${materi}</b></td></tr>
                         <tr><td class="font-bold pt-2">4.</td><td colspan="2" class="font-bold pt-2">Pelaksanaan Kegiatan</td></tr>
-                        <tr><td></td><td>a. Waktu</td><td>: ${tgl}</td></tr>
+                        <tr><td></td><td>a. Waktu</td><td>: ${tglKegiatan}</td></tr>
                         <tr><td></td><td>b. Tempat/Lokasi</td><td>: ${lok}</td></tr>
                         <tr><td></td><td>c. Metode</td><td>: ${metode}</td></tr>
                         <tr><td></td><td>d. Peserta</td><td>: ${pes}</td></tr>
@@ -487,7 +492,7 @@
                                 <b class="underline uppercase">${namaK}</b><br>NIP. ${nipK}
                             </div>
                             <div class="text-center w-[45%]">
-                                ${wilayah}, ${tgl}<br>Penyuluh Pertanian
+                                ${wilayah}, ${tglTTD}<br>Penyuluh Pertanian
                                 <div class="sig-box">${imgStore.ttd_p ? `<img src="${imgStore.ttd_p}" class="ttd-img">` : ''}</div>
                                 <b class="underline uppercase">${nama}</b><br>NIP. ${nip}
                             </div>
