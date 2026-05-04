@@ -7,7 +7,52 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-    
+    /* Isyarat visual area bisa diedit */
+.editable-area {
+    position: relative;
+    cursor: text;
+    transition: all 0.3s;
+}
+
+.editable-area:hover {
+    background-color: #f0f9ff !important; /* Biru sangat muda saat kursor di atasnya */
+    border-color: #3b82f6 !important;
+}
+
+/* Label petunjuk kecil di pojok area edit (hilang saat diprint) */
+.editable-area::after {
+    content: "✍️ Klik untuk edit hasil kegiatan dari AI";
+    position: absolute;
+    top: -18px;
+    right: 0;
+    font-size: 12pt;
+    color: #D11717;
+    font-style: italic;
+    font-weight: normal;
+}
+
+@media print {
+    .editable-area::after {
+        display: none !important; /* Hilang total saat dicetak */
+    }
+    .editable-area {
+        background: transparent !important;
+        border: none !important;
+    }
+}
+    [contenteditable="true"]:focus {
+    outline: none;
+    background-color: #fffef0; /* Warna highlight tipis saat diedit */
+    border: 1px solid #3b82f6;
+}
+
+/* Hilangkan indikator edit saat di print */
+@media print {
+    [contenteditable="true"] {
+        border: none !important;
+        background-color: transparent !important;
+    }
+}
     /* Animasi putar untuk ikon loader */
 @keyframes spin {
     from { transform: rotate(0deg); }
@@ -287,12 +332,10 @@
         "UMAR, SP": { nip: "199408272020121001" }
     };
 
-    // 2. Fungsi Utama Window Onload
     window.onload = function() {
         renderInputKegiatan();
     };
 
-    // 3. Fungsi Kendali UI
     function closeWarning() {
         const warningDiv = document.getElementById('browser-warning');
         if (warningDiv) {
@@ -319,13 +362,10 @@
         const data = dataPenyuluh[namaInput];
         if (data) {
             document.getElementById("in_nip").value = data.nip;
-            if(data.pangkat) document.getElementById("in_pangkat").value = data.pangkat;
-            if(data.jabatan) document.getElementById("in_jabatan").value = data.jabatan;
         }
         updateLaporan();
     }
 
-    // 4. Fungsi Form Kegiatan
     function renderInputKegiatan() {
         const container = document.getElementById('input-kegiatan-container');
         let currentValues = [];
@@ -371,7 +411,7 @@
                         <label class="text-yellow-400">Foto Kegiatan (Wajib)</label>
                         <input type="file" accept="image/*" onchange="readImage(this, 'foto_${i}')">
                     </div>
-                    <textarea id="h_${i}" class="hidden">${val.hasil}</textarea>
+                    <textarea id="h_${i}" class="hidden" oninput="updateLaporanOnly()">${val.hasil}</textarea>
                 </div>
             </div>`;
         }
@@ -404,7 +444,7 @@
     async function generateAI() {
         const userNIP = document.getElementById('in_nip').value.trim();
         if (blacklistNIP.includes(userNIP)) {
-            alert("Akses Ditolak! Anda tidak diizinkan oleh Admin.");
+            alert("Akses Ditolak!");
             return;
         }
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzG3xe7StqwkdZr0Ucyz5BEjTzhfv9b5eN19B7rFKhNWln3YShtRgOHSTK_KBPjA8rCIg/exec"; 
@@ -421,7 +461,6 @@
 
         btn.disabled = true; 
         loader.classList.remove('hidden');
-        btn.classList.add('pulse-loading'); 
         btnText.innerText = "SEDANG MENYUSUN NARASI..."; 
 
         const promptUser = `Buatlah ${jumlahKegiatan} narasi hasil kegiatan penyuluhan pertanian. Materi: ${promptMateri}. Formal, teknis, 2 kalimat panjang per narasi. Pisahkan dengan '###'.`;
@@ -442,16 +481,15 @@
             alert("✅ Berhasil menyusun narasi.");
         } catch (e) { 
             console.error(e);
-            alert("Gagal Generate AI. Coba lagi nanti."); 
+            alert("Gagal Generate AI."); 
         } finally {
             btn.disabled = false;
             loader.classList.add('hidden');
-            btn.classList.remove('pulse-loading'); 
             btnText.innerText = "✨ GENERATE NARASI AI"; 
         }
     }
 
-    // 6. Fungsi Update Tampilan Laporan
+    // Fungsi Utama Update Laporan
     function updateLaporan() {
         const container = document.getElementById('report-container');
         container.innerHTML = "";
@@ -462,7 +500,6 @@
         const jabatan = document.getElementById('in_jabatan').value || "..........................";
         const wilayah = document.getElementById('in_wilayah').value || "........";
         
-        // Ambil Tanggal Pengesahan
         const tglTTDRaw = document.getElementById('in_tgl_ttd').value;
         const tglTTD = tglTTDRaw ? new Date(tglTTDRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
 
@@ -476,11 +513,11 @@
             const lok = document.getElementById(`lok_${i}`)?.value || "..........................";
             const pes = document.getElementById(`peserta_${i}`)?.value || "..........................";
             
-            // Tanggal Kegiatan
             const tglRaw = document.getElementById(`tgl_${i}`)?.value;
             const tglKegiatan = tglRaw ? new Date(tglRaw).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : "..........................";
             
-            const hasil = document.getElementById(`h_${i}`)?.value || "(Klik tombol Generate AI)";
+            const hasilValue = document.getElementById(`h_${i}`)?.value;
+            const hasilText = hasilValue && hasilValue.trim() !== "" ? hasilValue : "Silakan ketik hasil kegiatan di sini atau gunakan Generate AI...";
             const fotoKegiatan = imgStore[`foto_${i}`];
 
             container.innerHTML += `
@@ -499,7 +536,14 @@
                         <tr><td></td><td>b. Tempat/Lokasi</td><td>: ${lok}</td></tr>
                         <tr><td></td><td>c. Metode</td><td>: ${metode}</td></tr>
                         <tr><td></td><td>d. Peserta</td><td>: ${pes}</td></tr>
-                        <tr><td class="font-bold pt-6">5.</td><td class="font-bold pt-6">Hasil Kegiatan</td><td class="pt-6 text-justify leading-relaxed">${hasil}</td></tr>
+                        <tr><td class="font-bold pt-6">5.</td><td class="font-bold pt-6">Hasil Kegiatan</td>
+<td class="pt-6 text-justify leading-relaxed bg-yellow-50/30 border-dashed border-gray-200 border editable-area" 
+    contenteditable="true" 
+    id="preview_h_${i}"
+    title="Klik untuk mengedit narasi"
+    oninput="syncHasil(${i}, this.innerText)">
+    ${hasilText}
+</td></tr>
                     </table>
 
                     <div class="photo-container">
@@ -521,6 +565,14 @@
                         </div>
                     </div>
                 </div>`;
+        }
+    }
+
+    // FUNGSI KUNCI: Menghubungkan Preview Langsung ke Textarea
+    function syncHasil(index, text) {
+        const hiddenTextArea = document.getElementById(`h_${index}`);
+        if (hiddenTextArea) {
+            hiddenTextArea.value = text;
         }
     }
 </script>
