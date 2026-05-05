@@ -30,7 +30,29 @@
     font-style: italic;
     font-weight: normal;
 }
+/* Judul Lampiran yang dipaksa pindah ke halaman baru */
+.photo-attachment-section {
+    page-break-before: always; /* Kunci utama pindah halaman */
+    margin-top: 50px;
+}
 
+.attachment-title {
+    text-align: center;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+/* Memperbesar ukuran foto di lampiran agar lebih jelas */
+.photo-img-large {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 450px; /* Ukuran lebih besar karena di halaman sendiri */
+    border: 1px solid #000;
+    padding: 5px;
+}
 @media print {
     .editable-area::after {
         display: none !important; /* Hilang total saat dicetak */
@@ -344,18 +366,38 @@
         }
     }
 
-    function safePrint() {
-        const userNIP = document.getElementById('in_nip').value.trim();
-        if (!userNIP) {
-            alert("Silakan isi NIP terlebih dahulu sebelum mencetak.");
-            return;
-        }
-        if (blacklistNIP.includes(userNIP)) {
-            alert("❌ AKSES ANDA DITOLAK!");
-            return;
-        }
-        window.print();
+   function safePrint() {
+    const userNIP = document.getElementById('in_nip').value.trim();
+    
+    // 1. Tetap cek NIP Kosong
+    if (!userNIP) {
+        alert("Silakan isi NIP terlebih dahulu sebelum mencetak.");
+        return;
     }
+    
+    // 2. Tetap cek Blacklist NIP
+    if (blacklistNIP.includes(userNIP)) {
+        alert("❌ AKSES ANDA DITOLAK!");
+        return;
+    }
+
+    // 3. TAMBAHAN: Cek Wajib Upload Foto untuk setiap kegiatan
+    for (let i = 1; i <= jumlahKegiatan; i++) {
+        // Mengecek apakah di imgStore sudah ada data foto untuk index ini
+        if (!imgStore[`foto_${i}`]) {
+            alert(`Gagal Cetak!\nFoto untuk Kegiatan ${i} belum diunggah.\n\nDokumen diseminasi wajib melampirkan foto bukti fisik di halaman lampiran.`);
+            
+            // Scroll ke arah input materi kegiatan yang fotonya kosong agar mudah ditemukan
+            const elemenTarget = document.getElementById(`materi_${i}`);
+            if(elemenTarget) elemenTarget.scrollIntoView({ behavior: 'smooth' });
+            
+            return; // Batalkan proses cetak
+        }
+    }
+
+    // 4. Jika semua syarat lolos, baru cetak
+    window.print();
+}
 
     function updateDataPenyuluh() {
         const namaInput = document.getElementById("in_nama").value;
@@ -407,10 +449,17 @@
                     <div class="input-group"><label>Lokasi / Kelompok</label><input type="text" id="lok_${i}" oninput="updateLaporan()" value="${val.lok}"></div>
                     <div class="input-group"><label>Jumlah Peserta</label><input type="text" id="peserta_${i}" oninput="updateLaporan()" value="${val.peserta}"></div>
                     <div class="input-group"><label>Tanggal Kegiatan</label><input type="date" id="tgl_${i}" onchange="updateLaporan()" value="${val.tgl}"></div>
-                    <div class="input-group">
-                        <label class="text-yellow-400">Foto Kegiatan (Wajib)</label>
-                        <input type="file" accept="image/*" onchange="readImage(this, 'foto_${i}')">
-                    </div>
+                 
+<div class="input-group">
+    <label class="text-red-500 font-bold animate-pulse">
+        <i class="fa-solid fa-camera mr-1"></i> FOTO KEGIATAN (WAJIB DIUNGGAH)
+    </label>
+    <input type="file" 
+           accept="image/*" 
+           required 
+           onchange="readImage(this, 'foto_${i}')"
+           class="border-2 border-red-500/50">
+</div>
                     <textarea id="h_${i}" class="hidden" oninput="updateLaporanOnly()">${val.hasil}</textarea>
                 </div>
             </div>`;
@@ -490,6 +539,7 @@
     }
 
     // Fungsi Utama Update Laporan
+   // Fungsi Utama Update Laporan
     function updateLaporan() {
         const container = document.getElementById('report-container');
         container.innerHTML = "";
@@ -522,6 +572,7 @@
 
             container.innerHTML += `
                 <div class="report-page">
+                    <!-- HALAMAN 1: DATA DAN NARASI -->
                     <div class="text-center font-bold text-lg mb-8 uppercase underline">LAPORAN KEGIATAN DISEMINASI INFORMASI PERTANIAN</div>
                     <table>
                         <tr><td width="30" class="font-bold">1.</td><td colspan="2" class="font-bold">Penyuluh Pertanian</td></tr>
@@ -537,19 +588,17 @@
                         <tr><td></td><td>c. Metode</td><td>: ${metode}</td></tr>
                         <tr><td></td><td>d. Peserta</td><td>: ${pes}</td></tr>
                         <tr><td class="font-bold pt-6">5.</td><td class="font-bold pt-6">Hasil Kegiatan</td>
-<td class="pt-6 text-justify leading-relaxed bg-yellow-50/30 border-dashed border-gray-200 border editable-area" 
-    contenteditable="true" 
-    id="preview_h_${i}"
-    title="Klik untuk mengedit narasi"
-    oninput="syncHasil(${i}, this.innerText)">
-    ${hasilText}
-</td></tr>
+                            <td class="pt-6 text-justify leading-relaxed bg-yellow-50/30 border-dashed border-gray-200 border editable-area" 
+                                contenteditable="true" 
+                                id="preview_h_${i}"
+                                title="Klik untuk mengedit narasi"
+                                oninput="syncHasil(${i}, this.innerText)">
+                                ${hasilText}
+                            </td>
+                        </tr>
                     </table>
 
-                    <div class="photo-container">
-                        ${fotoKegiatan ? `<img src="${fotoKegiatan}" class="photo-img">` : '<div class="h-20 flex items-center justify-center border-dashed border-2 border-gray-300 text-gray-400 text-sm">Foto belum diunggah</div>'}
-                    </div>
-
+                    <!-- Tanda Tangan Tetap di Halaman 1 -->
                     <div class="signature-wrapper">
                         <div class="flex justify-between mt-10 px-10">
                             <div class="text-center w-[45%]">
@@ -564,7 +613,26 @@
                             </div>
                         </div>
                     </div>
-                </div>`;
+
+          
+        <div class="photo-attachment-section">
+            <div class="attachment-title">LAMPIRAN FOTO KEGIATAN</div>
+            
+            <!-- Gunakan container block agar teks dipaksa ke bawah foto -->
+            <div style="display: block; width: 100%; text-align: center;">
+                ${fotoKegiatan ? 
+                    `<div style="display: inline-block; border: 1px solid #000; padding: 5px;">
+                        <img src="${fotoKegiatan}" style="max-width: 100%; max-height: 500px; display: block;">
+                     </div>
+                     <p style="margin-top: 15px; font-size: 11pt; line-height: 1.5; font-weight: bold; width: 100%;">
+                        Gambar: Dokumentasi Kegiatan ${materi}
+                     </p>` 
+                    : 
+                    '<p style="color: #666;">Foto belum diunggah</p>'
+                }
+            </div>
+        </div>
+    </div>`;
         }
     }
 
