@@ -371,7 +371,7 @@
 
 <script>
     // 1. Inisialisasi Data & Variabel Global
-    const blacklistNIP = ["199409042020122001", "19940904 202012 2 001"];
+    const blacklistNIP = ["199409042020122001", "19940904 202012 2 001", "199904112022032002", "19990411 202203 2 002"];
     let jumlahKegiatan = 1;
     let imgStore = { ttd_p: "", ttd_k: "" };
     
@@ -412,7 +412,7 @@
     
     // 2. Tetap cek Blacklist NIP
     if (blacklistNIP.includes(userNIP)) {
-        alert("❌ AKSES ANDA DITOLAK!");
+        
         return;
     }
 
@@ -528,7 +528,7 @@
     async function generateAI() {
         const userNIP = document.getElementById('in_nip').value.trim();
         if (blacklistNIP.includes(userNIP)) {
-            alert("Akses Ditolak!");
+            
             return;
         }
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzG3xe7StqwkdZr0Ucyz5BEjTzhfv9b5eN19B7rFKhNWln3YShtRgOHSTK_KBPjA8rCIg/exec"; 
