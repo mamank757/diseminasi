@@ -145,6 +145,16 @@
     width: 100%;
 }
 
+/* Blok label di atas kotak tanda tangan, disamakan tingginya agar sejajar */
+.sig-label {
+    min-height: 44px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.4;
+}
+
 /* --- Gabungkan/Ganti @media print Anda dengan ini --- */
 @media print {
     @page { 
@@ -637,13 +647,13 @@
                     <!-- Tanda Tangan Tetap di Halaman 1 -->
                     <div class="signature-wrapper">
                         <div class="flex justify-between mt-10 px-10">
-                            <div class="text-center w-[45%]">
-                                Mengetahui,<br>${labelK} ${wilayah}
+                            <div class="text-center w-[45%] flex flex-col items-center">
+                                <div class="sig-label">Mengetahui,<br>${labelK} ${wilayah}</div>
                                 <div class="sig-box">${imgStore.ttd_k ? `<img src="${imgStore.ttd_k}" class="ttd-img">` : ''}</div>
                                 <b class="underline">${namaK}</b><br>NIP. ${nipK}
                             </div>
-                            <div class="text-center w-[45%]">
-                                ${wilayah}, ${tglTTD}<br>Penyuluh Pertanian
+                            <div class="text-center w-[45%] flex flex-col items-center">
+                                <div class="sig-label">${wilayah}, ${tglTTD}<br>Penyuluh Pertanian</div>
                                 <div class="sig-box">${imgStore.ttd_p ? `<img src="${imgStore.ttd_p}" class="ttd-img">` : ''}</div>
                                 <b class="underline">${nama}</b><br>NIP. ${nip}
                             </div>
